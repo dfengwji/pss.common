@@ -1,4 +1,4 @@
-module github.com/dfengwji/pss-common
+module github.com/dfengwji/pss.common
 
 go 1.12
 

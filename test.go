@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/dfengwji/pss-common/proxy"
+	"github.com/dfengwji/pss.common/proxy"
 	"testing"
 )
 
