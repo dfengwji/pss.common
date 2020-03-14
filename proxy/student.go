@@ -35,7 +35,7 @@ func CreateStudent(info *Student) error {
 }
 
 func GetStudentNextID() uint64 {
-	num, _ := getSequenceNext(TableStudent)
+	num, _ := getSequenceNext(TableRoleID)
 	return num
 }
 

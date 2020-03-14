@@ -9,17 +9,20 @@ import (
 
 type PrivateBook struct {
 	UID         primitive.ObjectID `bson:"_id"`
-	ID          uint64             `json:"id" bson:"id"`
-	Name        string             `json:"name" bson:"name"`
-	Author      string             `json:"author" bson:"author"`
-	CreatedTime time.Time          `json:"createdAt" bson:"createdAt"`
-	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
-	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
-	Type        uint8              `json:"type" bson:"type"`
-	Cover       string             `json:"cover" bson:"cover"`
-	Remark      string             `json:"remark" bson:"remark"`
-	Count       uint16             `json:"count" bson:"count"`
-	Exams       []string           `json:"exams" bson:"exams"`
+	ID           uint64    `json:"id" bson:"id"`
+	Name         string    `json:"name" bson:"name"`
+	Author       string    `json:"author" bson:"author"`
+	CreatedTime  time.Time `json:"createdAt" bson:"createdAt"`
+	UpdatedTime  time.Time `json:"updatedAt" bson:"updatedAt"`
+	DeleteTime   time.Time `json:"deleteAt" bson:"deleteAt"`
+	Type         uint8     `json:"type" bson:"type"`
+	Status       uint8 		`json:"status" bson:"status"`
+	PDF        string    `json:"pdf" bson:"pdf"`
+	Cover        string    `json:"cover" bson:"cover"`
+	Remark       string    `json:"remark" bson:"remark"`
+	Count        uint16    `json:"count" bson:"count"`
+	PublicStyles []string  `json:"parents" bson:"parents"`
+	Exams        []string  `json:"exams" bson:"exams"`
 }
 
 func CreateMisBook(info *PrivateBook) error {
@@ -31,7 +34,7 @@ func CreateMisBook(info *PrivateBook) error {
 }
 
 func GetPrivateBookNextID() uint64 {
-	num, _ := getSequenceNext(TablePrivateBook)
+	num, _ := getSequenceNext(TableBookID)
 	return num
 }
 
@@ -105,14 +108,38 @@ func UpdatePrivateBookBase(uid string, name string, remark string) error {
 	return err
 }
 
-func UpdatePrivateBookExams(uid string, exams []string) error {
-	msg := bson.M{"exams": exams, "updatedAt": time.Now()}
+func UpdatePrivateBookStatus(uid string, status uint8, pdf string) error {
+	msg := bson.M{"pdf": pdf, "status": status, "updatedAt": time.Now()}
 	_, err := updateOne(TablePrivateBook, uid, msg)
 	return err
 }
 
-func AppendPrivateBookExam(uid string, exam string) error {
-	msg := bson.M{"exams": exam}
+func UpdatePrivateBookExamSet(uid string, exams []string, parents []string) error {
+	msg := bson.M{"exams": exams, "parents": parents, "updatedAt": time.Now()}
+	_, err := updateOne(TablePrivateBook, uid, msg)
+	return err
+}
+
+func UpdatePrivateBookParents(uid string, parents []string) error {
+	msg := bson.M{"parents": parents, "updatedAt": time.Now()}
+	_, err := updateOne(TablePrivateBook, uid, msg)
+	return err
+}
+
+func AppendPrivateBookExam(uid string, exam string, style string) error {
+	if len(style) > 1 {
+		msg := bson.M{"exams": exam, "parents": style}
+		_, err := appendElement(TablePrivateBook, uid, msg)
+		return err
+	}else{
+		msg := bson.M{"exams": exam}
+		_, err := appendElement(TablePrivateBook, uid, msg)
+		return err
+	}
+}
+
+func AppendPrivateBookParent(uid string, parent string) error {
+	msg := bson.M{"parents": parent}
 	_, err := appendElement(TablePrivateBook, uid, msg)
 	return err
 }
@@ -122,3 +149,4 @@ func UnbindPrivateBookExam(uid string, exam string) error {
 	_, err := removeElement(TablePrivateBook, uid, msg)
 	return err
 }
+

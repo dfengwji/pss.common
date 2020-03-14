@@ -31,7 +31,7 @@ func CreatePublicBook(info *PublicBook) error {
 }
 
 func GetPublicBookNextID() uint64 {
-	num, _ := getSequenceNext(TablePublicBook)
+	num, _ := getSequenceNext(TableBookID)
 	return num
 }
 
@@ -42,6 +42,20 @@ func GetPublicBookCount() int64 {
 
 func GetPublicBook(uid string) (*PublicBook, error) {
 	result, err := findOne(TablePublicBook, uid)
+	if err != nil {
+		return nil, err
+	}
+	model := new(PublicBook)
+	err1 := result.Decode(model)
+	if err1 != nil {
+		return nil, err1
+	}
+	return model, nil
+}
+
+func GetPublicBookByID(id uint64) (*PublicBook, error) {
+	msg := bson.M{"id": id}
+	result, err := findOneBy(TablePublicBook, msg)
 	if err != nil {
 		return nil, err
 	}

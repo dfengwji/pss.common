@@ -26,6 +26,7 @@ type EduClass struct {
 	Scene    string   `json:"scene" bson:"scene"`
 	Teacher  string   `json:"teacher" bson:"teacher"`
 	Students []string `json:"students" bson:"students"`
+	Workbooks    []string `json:"workbooks" bson:"workbooks"`
 }
 
 func CreateClass(info *EduClass) error {

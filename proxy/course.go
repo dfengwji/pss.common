@@ -21,6 +21,7 @@ type MicroCourse struct {
 	Author      string             `json:"author" bson:"author"`
 	Owner       string             `json:"owner" bson:"owner"`
 	Cover       string             `json:"cover" bson:"cover"`
+	Menu        string 			   `json:"menu" bson:"menu"`
 	Tags        []string           `json:"tags" bson:"tags"`
 }
 

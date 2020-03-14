@@ -86,10 +86,10 @@ func GetAsset(uid string) (*Asset,error) {
 	return model,nil
 }
 
-func GetAssetsByAuthor(owner string) ([]*Asset,error) {
+func GetAssetsByOwner(owner string) ([]*Asset,error) {
 	var items = make([]*Asset, 0, 20)
 	def := new(time.Time)
-	filter := bson.M{"owner":owner, "base.delete_at": def}
+	filter := bson.M{"owner":owner, "deleteAt": def}
 	cursor, err1 := findMany(TableAsset, filter, 0)
 	if err1 != nil {
 		return nil,err1
@@ -132,11 +132,11 @@ func parseAssets(data []gjson.Result) bool {
 			switch key {
 			case "_id":
 				asset.UID, _ = primitive.ObjectIDFromHex(value.String())
-			case "base.createdAt":
+			case "createdAt":
 				asset.CreatedTime = value.Time()
 			case "updatedAt":
 				asset.UpdatedTime = value.Time()
-			case "base.deleteAt":
+			case "deleteAt":
 				asset.DeleteTime = value.Time()
 			case "name":
 				asset.Name = value.String()

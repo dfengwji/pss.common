@@ -22,14 +22,14 @@ type Writing struct {
 	Style       string             `json:"style" bson:"style"`
 	Color       string             `json:"color" bson:"color"`
 	DotBook     uint64             `json:"dotBook" bson:"dotBook"`
-	DotPage     uint64             `json:"dotPage" bson:"dotPage"`
+	DotPage     uint16             `json:"dotPage" bson:"dotPage"`
 	DotStamp    uint64             `json:"dotStamp" bson:"dotStamp"`
 	DotNum      uint16             `json:"dotNum" bson:"dotNum"`
 	Dots        string             `json:"dots" bson:"dots"`
 	Duration    uint16             `json:"duration" bson:"duration"`
 }
 
-func CreateWriting(info Writing) error {
+func CreateWriting(info *Writing) error {
 	_, err := insertOne(TableWriting, info)
 	return err
 }
@@ -99,7 +99,7 @@ func GetWritingByStyle(user uint64, style string) (*Writing, error) {
 }
 
 func GetWritingDots(uid string) (*Writing, error) {
-	result, err := findOneOfField(TableWriting, uid, bson.M{"dots":1})
+	result, err := findOneOfField(TableWriting, uid, bson.M{"dots":1, "dotNum":1})
 	if err != nil {
 		return nil, err
 	}

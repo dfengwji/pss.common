@@ -28,7 +28,7 @@ type OriginStyle struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 	Book        string             `json:"book" bson:"book"`
-	Page        uint32             `json:"pageNo" bson:"pageNo"`
+	Page        uint16            `json:"pageNo" bson:"pageNo"`
 	Exam        string             `json:"examNo" bson:"examNo"`
 	StartX      uint32             `json:"sx" bson:"sx"`
 	StartY      uint32             `json:"sy" bson:"sy"`

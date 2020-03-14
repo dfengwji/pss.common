@@ -34,7 +34,7 @@ func CreateTeacher(info *Teacher) error {
 }
 
 func GetTeacherNextID() uint64 {
-	num, _ := getSequenceNext(TableTeacher)
+	num, _ := getSequenceNext(TableRoleID)
 	return num
 }
 
@@ -82,12 +82,9 @@ func GetTeacherByPhone(phone string) (*Teacher, error) {
 	return model, nil
 }
 
-func RemoveTeacher(uid string) bool {
+func RemoveTeacher(uid string) error {
 	_, err := removeOne(TableTeacher, uid)
-	if err == nil {
-		return true
-	}
-	return false
+	return err
 }
 
 func UpdateTeacherBase(uid string, name string, sex uint8, desc string) error {

@@ -51,7 +51,7 @@ func GetApply(uid string) (*Apply, error) {
 
 func GetAppliesByClass(class string) ([]*Apply, error) {
 	msg := bson.M{"class": class, "deleteAt": new(time.Time)}
-	cursor, err1 := findMany(TableStudent, msg, 0)
+	cursor, err1 := findMany(TableApply, msg, 0)
 	if err1 != nil {
 		return nil, err1
 	}
@@ -69,7 +69,7 @@ func GetAppliesByClass(class string) ([]*Apply, error) {
 
 func GetAppliesByApplicant(user string) ([]*Apply, error) {
 	msg := bson.M{"applicant": user, "deleteAt": new(time.Time)}
-	cursor, err1 := findMany(TableStudent, msg, 0)
+	cursor, err1 := findMany(TableApply, msg, 0)
 	if err1 != nil {
 		return nil, err1
 	}

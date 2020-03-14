@@ -225,6 +225,20 @@ func findOneOfField(collection string, uid string, selector bson.M) (*mongo.Sing
 	return result, nil
 }
 
+func findOneByOpt(collection string, filter bson.M, selector bson.M) (*mongo.SingleResult, error) {
+	c := noSql.Collection(collection)
+	if c == nil {
+		return nil, errors.New("can not found the collection of" + collection)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+	defer cancel()
+	result := c.FindOne(ctx, filter, options.FindOne().SetProjection(selector))
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+	return result, nil
+}
+
 func findMany(collection string, filter bson.M, limit int64) (*mongo.Cursor, error) {
 	c := noSql.Collection(collection)
 	if c == nil {

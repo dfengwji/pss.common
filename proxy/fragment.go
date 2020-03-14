@@ -26,7 +26,7 @@ type Fragment struct {
 	ExamStyle   string    `json:"style" bson:"style"`
 	Stamp       uint64    `json:"stamp" bson:"stamp"`
 	DotBook     uint64    `json:"dotBook" bson:"dotBook"`
-	DotPage     uint64    `json:"dotPage" bson:"dotPage"`
+	DotPage     uint16    `json:"dotPage" bson:"dotPage"`
 	DotNum      uint16    `json:"dotNum" bson:"dotNum"`
 	Dots        string    `json:"dots" bson:"dots"`
 }

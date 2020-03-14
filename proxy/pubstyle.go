@@ -15,7 +15,8 @@ type PublicStyle struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 	Book        string             `json:"book" bson:"book"`
-	Page        uint32             `json:"page" bson:"page"`
+	Page        uint16             `json:"page" bson:"page"`
+	Background   string 			`json:"background" bson:"background"`
 	Example     string             `json:"examNo" bson:"examNo"`
 	StartX      uint32             `json:"sx" bson:"sx"`
 	StartY      uint32             `json:"sy" bson:"sy"`
@@ -93,8 +94,14 @@ func UpdatePublicStyleBook(uid string, book string) error {
 	return err
 }
 
-func UpdatePublicStyleBase(uid string,page uint32, x uint32, y uint32, ex uint32, ey uint32) error {
-	msg := bson.M{"page": page, "sx": x, "sy": y, "ex": ex, "ey": ey, "updatedAt": time.Now()}
+func UpdatePublicStyleBase(uid string,page uint16, x uint32, y uint32, ex uint32, ey uint32, bg string) error {
+	msg := bson.M{"page": page, "sx": x, "sy": y, "ex": ex, "ey": ey, "background":bg, "updatedAt": time.Now()}
+	_, err := updateOne(TablePublicStyle, uid, msg)
+	return err
+}
+
+func UpdatePublicStyleScore(uid string,score uint16) error {
+	msg := bson.M{"score": score, "updatedAt": time.Now()}
 	_, err := updateOne(TablePublicStyle, uid, msg)
 	return err
 }
