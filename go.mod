@@ -1,6 +1,6 @@
 module dfengwji/pss.common
 
-go 1.12
+go 1.13.4
 
 require (
 	github.com/labstack/gommon v0.3.0
