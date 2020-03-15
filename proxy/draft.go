@@ -1,0 +1,110 @@
+package proxy
+
+import (
+	"context"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
+
+type CourseDraft struct {
+	UID         primitive.ObjectID `bson:"_id"`
+	ID          uint64             `json:"id" bson:"id"`
+	CreatedTime time.Time          `json:"createdAt" bson:"createdAt"`
+	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
+	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
+	Name        string             `json:"name" bson:"name"`
+	Remark      string             `json:"remark" bson:"remark"`
+	Author      string             `json:"author" bson:"author"`
+	Cover       string             `json:"cover" bson:"cover"`
+	Video       string             `json:"video" bson:"video"`
+	TaskUID     string             `json:"task" bson:"task"`
+	DotNumber   uint16             `json:"dotNum" bson:"dotNum"`
+	Duration    uint16             `json:"duration" bson:"duration"`
+	Dots        string             `json:"dots" bson:"dots"`
+	Audios      []string             `json:"audios" bson:"audios"`
+}
+
+func CreateCourseDraft(info *CourseDraft) error {
+	_, err := insertOne(TableCourseDraft, info)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetAllCourseDrafts() ([]*CourseDraft, error) {
+	cursor, err1 := findAll(TableCourseDraft, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*CourseDraft, 0, 10000)
+	for cursor.Next(context.Background()) {
+		var node = new(CourseDraft)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func GetCourseDraftNextID() uint64 {
+	num, _ := getSequenceNext(TableCourseDraft)
+	return num
+}
+
+func RemoveCourseDraft(uid string) error {
+	_, err := removeOne(TableCourseDraft, uid)
+	return err
+}
+
+func GetCourseDraft(uid string) (*CourseDraft, error) {
+	result, err := findOne(TableCourseDraft, uid)
+	if err != nil {
+		return nil, err
+	}
+	model := new(CourseDraft)
+	err1 := result.Decode(model)
+	if err1 != nil {
+		return nil, err1
+	}
+	return model, nil
+}
+
+func GetCourseDraftsByAuthor(author string) ([]*CourseDraft, error) {
+	msg := bson.M{"author": author, "deleteAt": new(time.Time)}
+	cursor, err1 := findMany(TableCourseDraft, msg, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*CourseDraft, 0, 200)
+	for cursor.Next(context.Background()) {
+		var node = new(CourseDraft)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func UpdateCourseDraftBase(uid string, name string, remark string) error {
+	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
+	_, err := updateOne(TableCourseDraft, uid, msg)
+	return err
+}
+
+func UpdateCourseDraftVideo(uid string, video string) error {
+	msg := bson.M{"video": video, "updatedAt": time.Now()}
+	_, err := updateOne(TableCourseDraft, uid, msg)
+	return err
+}
+
+func UpdateCourseDraftCover(uid string, cover string) error {
+	msg := bson.M{"cover": cover, "updatedAt": time.Now()}
+	_, err := updateOne(TableCourseDraft, uid, msg)
+	return err
+}

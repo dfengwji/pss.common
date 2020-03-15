@@ -117,6 +117,7 @@ const (
 
 	TableCourseMenu = "courseMenus"
 	TableMicroCourse = "courses"
+	TableCourseDraft = "drafts"
 
 	TableNoteBook = "notebooks"
 	TableNoteWriting = "noteWritings"

@@ -143,8 +143,8 @@ func UpdateUserPhone(uid string, phone string) error {
 	return err
 }
 
-func UpdateUserRole(uid string, role string) error {
-	msg := bson.M{"role": role, "updatedAt": time.Now()}
+func UpdateUserRole(uid string, role string, phone string) error {
+	msg := bson.M{"role": role, "phone":phone, "updatedAt": time.Now()}
 	_, err := updateOne(TableUser, uid, msg)
 	return err
 }

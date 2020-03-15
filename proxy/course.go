@@ -20,8 +20,10 @@ type MicroCourse struct {
 	OpenMode    uint8              `json:"open" bson:"open"`
 	Author      string             `json:"author" bson:"author"`
 	Owner       string             `json:"owner" bson:"owner"`
+	Draft       string				`json:"draft" bson:"draft"`
 	Cover       string             `json:"cover" bson:"cover"`
 	Menu        string 			   `json:"menu" bson:"menu"`
+	Video       string 				`json:"video" bson:"video"`
 	Tags        []string           `json:"tags" bson:"tags"`
 }
 
