@@ -16,6 +16,7 @@ type CourseMenu struct {
 	Name        string             `json:"name" bson:"name"`
 	Parent      string             `json:"parent" bson:"parent"`
 	Cover       string             `json:"cover" bson:"cover"`
+	Remark      string 				`json:"remark" bson:"remark"`
 }
 
 
@@ -32,7 +33,7 @@ func GetAllCourseMenus() ([]*CourseMenu, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*CourseMenu, 0, 10000)
+	var items = make([]*CourseMenu, 0, 100)
 	for cursor.Next(context.Background()) {
 		var node = new(CourseMenu)
 		if err := cursor.Decode(node); err != nil {
@@ -67,8 +68,8 @@ func GetCourseMenu(uid string) (*CourseMenu, error) {
 	return model, nil
 }
 
-func GetCourseMenusByAuthor(author string) ([]*CourseMenu, error) {
-	msg := bson.M{"author": author, "deleteAt": new(time.Time)}
+func GetAllTopCourseMenus() ([]*CourseMenu, error) {
+	msg := bson.M{"parent": "", "deleteAt": new(time.Time)}
 	cursor, err1 := findMany(TableCourseMenu, msg, 0)
 	if err1 != nil {
 		return nil, err1
@@ -85,8 +86,26 @@ func GetCourseMenusByAuthor(author string) ([]*CourseMenu, error) {
 	return items, nil
 }
 
-func UpdateCourseMenuBase(uid string, name string, remark string, kind uint8, open uint8) error {
-	msg := bson.M{"name": name, "remark": remark, "open":open, "type":kind, "updatedAt": time.Now()}
+func GetCourseMenusByTop(parent string) ([]*CourseMenu, error) {
+	msg := bson.M{"parent": parent, "deleteAt": new(time.Time)}
+	cursor, err1 := findMany(TableCourseMenu, msg, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*CourseMenu, 0, 200)
+	for cursor.Next(context.Background()) {
+		var node = new(CourseMenu)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func UpdateCourseMenuBase(uid string, name string, remark string) error {
+	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
 	_, err := updateOne(TableCourseMenu, uid, msg)
 	return err
 }

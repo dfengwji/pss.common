@@ -18,10 +18,9 @@ type CourseDraft struct {
 	Author      string             `json:"author" bson:"author"`
 	Cover       string             `json:"cover" bson:"cover"`
 	Video       string             `json:"video" bson:"video"`
+	Duration    uint16 `json:"duration" bson:"duration"`
+	Start       uint64 `json:"start" bson:"start"`
 	TaskUID     string             `json:"task" bson:"task"`
-	DotNumber   uint16             `json:"dotNum" bson:"dotNum"`
-	Duration    uint16             `json:"duration" bson:"duration"`
-	Dots        string             `json:"dots" bson:"dots"`
 	Audios      []string             `json:"audios" bson:"audios"`
 }
 
@@ -105,6 +104,12 @@ func UpdateCourseDraftVideo(uid string, video string) error {
 
 func UpdateCourseDraftCover(uid string, cover string) error {
 	msg := bson.M{"cover": cover, "updatedAt": time.Now()}
+	_, err := updateOne(TableCourseDraft, uid, msg)
+	return err
+}
+
+func UpdateCourseDraftTask(uid string, task string) error {
+	msg := bson.M{"task": task, "updatedAt": time.Now()}
 	_, err := updateOne(TableCourseDraft, uid, msg)
 	return err
 }

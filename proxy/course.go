@@ -116,3 +116,9 @@ func UpdateMicroCourseTags(uid string, tags []string) error {
 	_, err := updateOne(TableMicroCourse, uid, msg)
 	return err
 }
+
+func UpdateMicroCourseMenu(uid string, menu string) error {
+	msg := bson.M{"menu": menu, "updatedAt": time.Now()}
+	_, err := updateOne(TableMicroCourse, uid, msg)
+	return err
+}
