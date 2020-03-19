@@ -15,7 +15,7 @@ type MicroCourse struct {
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 	Name        string             `json:"name" bson:"name"`
 	Remark      string             `json:"remark" bson:"remark"`
-	Type        uint8              `json:"type" bson:"type"`
+	Duration    uint32              `json:"duration" bson:"duration"`
 	Status      uint8              `json:"status" bson:"status"`
 	OpenMode    uint8              `json:"open" bson:"open"`
 	Author      string             `json:"author" bson:"author"`
@@ -93,8 +93,8 @@ func GetMicroCoursesByAuthor(author string) ([]*MicroCourse, error) {
 	return items, nil
 }
 
-func UpdateMicroCourseBase(uid string, name string, remark string, kind uint8, open uint8) error {
-	msg := bson.M{"name": name, "remark": remark, "open":open, "type":kind, "updatedAt": time.Now()}
+func UpdateMicroCourseBase(uid string, name string, remark string, open uint8) error {
+	msg := bson.M{"name": name, "remark": remark, "open":open, "updatedAt": time.Now()}
 	_, err := updateOne(TableMicroCourse, uid, msg)
 	return err
 }
