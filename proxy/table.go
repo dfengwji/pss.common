@@ -115,12 +115,12 @@ const (
 	*/
 	TableApply = "applies"
 
-	TableCourseMenu = "courseMenus"
-	TableMicroCourse = "courses"
-	TableCourseDraft = "drafts"
+	TableCourseMenu   = "courseMenus"
+	TableMicroCourse  = "courses"
+	TableCourseDraft  = "drafts"
 	TableDraftWriting = "draftWritings"
-	TableNoteBook = "notebooks"
-	TableNoteWriting = "noteWritings"
-	TableRoleID = "roleIDs"
-	TableBookID = "bookIDs"
+	TableNoteBook     = "notebooks"
+	TableNoteWriting  = "noteWritings"
+	TableRoleID       = "roleIDs"
+	TableBookID       = "bookIDs"
 )

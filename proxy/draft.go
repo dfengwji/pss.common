@@ -18,11 +18,11 @@ type CourseDraft struct {
 	Author      string             `json:"author" bson:"author"`
 	Cover       string             `json:"cover" bson:"cover"`
 	Video       string             `json:"video" bson:"video"`
-	Duration    uint16 				`json:"duration" bson:"duration"`
-	Menu        string 				`json:"menu" bson:"menu"`
-	Start       uint64 				`json:"start" bson:"start"`
+	Duration    uint32             `json:"duration" bson:"duration"`
+	Menu        string             `json:"menu" bson:"menu"`
+	Start       uint64             `json:"start" bson:"start"`
 	TaskUID     string             `json:"task" bson:"task"`
-	Audios      []string             `json:"audios" bson:"audios"`
+	Audios      []string           `json:"audios" bson:"audios"`
 }
 
 func CreateCourseDraft(info *CourseDraft) error {

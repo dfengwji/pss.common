@@ -18,7 +18,7 @@ type Exercise struct {
 	Grade       uint8              `json:"grade" bson:"grade"`
 	Type        uint8              `json:"type" bson:"type"`
 	Answer      string             `json:"answer" bson:"answer"`
-	Owner		string 			   `json:"owner" bson:"owner"`
+	Owner       string             `json:"owner" bson:"owner"`
 	Author      string             `json:"author" bson:"author"`
 	Tags        []string           `json:"tags" bson:"tags"`
 }

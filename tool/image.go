@@ -10,7 +10,7 @@ import (
 func ImageLoad(url string, path string) error {
 	//fmt.Println(url+"---"+path)
 	response, error1 := http.Get(url)
-	if error1!= nil {
+	if error1 != nil {
 		return error1
 	}
 

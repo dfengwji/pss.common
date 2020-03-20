@@ -24,8 +24,8 @@ type User struct {
 	Wechat       string             `json:"wechat" bson:"wechat"`
 	Address      string             `json:"address" bson:"address"`
 	AppointChild string             `json:"appoint" bson:"appoint"`
-	Children    []string 			`json:"children" bson:"children"`
-	Role		string				`json:"role" bson:"role"`
+	Children     []string           `json:"children" bson:"children"`
+	Role         string             `json:"role" bson:"role"`
 }
 
 func CreateUser(info *User) error {
@@ -144,7 +144,7 @@ func UpdateUserPhone(uid string, phone string) error {
 }
 
 func UpdateUserRole(uid string, role string, phone string) error {
-	msg := bson.M{"role": role, "phone":phone, "updatedAt": time.Now()}
+	msg := bson.M{"role": role, "phone": phone, "updatedAt": time.Now()}
 	_, err := updateOne(TableUser, uid, msg)
 	return err
 }

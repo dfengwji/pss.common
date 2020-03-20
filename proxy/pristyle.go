@@ -20,7 +20,7 @@ type PrivateStyle struct {
 	StartY      uint32             `json:"sy" bson:"sy"`
 	EndX        uint32             `json:"ex" bson:"ex"`
 	EndY        uint32             `json:"ey" bson:"ey"`
-	Background  string 				`json:"background" bson:"background"`
+	Background  string             `json:"background" bson:"background"`
 	Exercise    string             `json:"exercise" bson:"exercise"`
 }
 
@@ -92,8 +92,8 @@ func UpdatePrivateStyle(uid string, book string) error {
 	return err
 }
 
-func UpdatePrivateStyleBase(uid string,page uint16, x uint32, y uint32, ex uint32, ey uint32, bg string) error {
-	msg := bson.M{"page": page, "sx": x, "sy": y, "ex": ex, "ey": ey, "background":bg, "updatedAt": time.Now()}
+func UpdatePrivateStyleBase(uid string, page uint16, x uint32, y uint32, ex uint32, ey uint32, bg string) error {
+	msg := bson.M{"page": page, "sx": x, "sy": y, "ex": ex, "ey": ey, "background": bg, "updatedAt": time.Now()}
 	_, err := updateOne(TablePrivateStyle, uid, msg)
 	return err
 }

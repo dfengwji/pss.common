@@ -7,24 +7,24 @@ import (
 
 func ParseDate(date string) (time.Time, error) {
 	if date == "" {
-		return time.Now(),nil
+		return time.Now(), nil
 	}
 	dt, err := time.Parse("2006-01-02", date)
 	if err != nil {
-		return dt,err
+		return dt, err
 	}
-	return dt,nil
+	return dt, nil
 }
 
-func ParseTime(date string) (time.Time,error) {
+func ParseTime(date string) (time.Time, error) {
 	if date == "" {
-		return time.Now(),nil
+		return time.Now(), nil
 	}
 	dt, err := time.Parse("2006-01-02 15:04:05", date)
 	if err != nil {
-		return dt,err
+		return dt, err
 	}
-	return dt,nil
+	return dt, nil
 }
 
 func unixToTime(unix int64) time.Time {

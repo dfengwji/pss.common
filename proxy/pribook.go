@@ -8,21 +8,21 @@ import (
 )
 
 type PrivateBook struct {
-	UID         primitive.ObjectID `bson:"_id"`
-	ID           uint64    `json:"id" bson:"id"`
-	Name         string    `json:"name" bson:"name"`
-	Author       string    `json:"author" bson:"author"`
-	CreatedTime  time.Time `json:"createdAt" bson:"createdAt"`
-	UpdatedTime  time.Time `json:"updatedAt" bson:"updatedAt"`
-	DeleteTime   time.Time `json:"deleteAt" bson:"deleteAt"`
-	Type         uint8     `json:"type" bson:"type"`
-	Status       uint8 		`json:"status" bson:"status"`
-	PDF        string    `json:"pdf" bson:"pdf"`
-	Cover        string    `json:"cover" bson:"cover"`
-	Remark       string    `json:"remark" bson:"remark"`
-	Count        uint16    `json:"count" bson:"count"`
-	PublicStyles []string  `json:"parents" bson:"parents"`
-	Exams        []string  `json:"exams" bson:"exams"`
+	UID          primitive.ObjectID `bson:"_id"`
+	ID           uint64             `json:"id" bson:"id"`
+	Name         string             `json:"name" bson:"name"`
+	Author       string             `json:"author" bson:"author"`
+	CreatedTime  time.Time          `json:"createdAt" bson:"createdAt"`
+	UpdatedTime  time.Time          `json:"updatedAt" bson:"updatedAt"`
+	DeleteTime   time.Time          `json:"deleteAt" bson:"deleteAt"`
+	Type         uint8              `json:"type" bson:"type"`
+	Status       uint8              `json:"status" bson:"status"`
+	PDF          string             `json:"pdf" bson:"pdf"`
+	Cover        string             `json:"cover" bson:"cover"`
+	Remark       string             `json:"remark" bson:"remark"`
+	Count        uint16             `json:"count" bson:"count"`
+	PublicStyles []string           `json:"parents" bson:"parents"`
+	Exams        []string           `json:"exams" bson:"exams"`
 }
 
 func CreateMisBook(info *PrivateBook) error {
@@ -131,7 +131,7 @@ func AppendPrivateBookExam(uid string, exam string, style string) error {
 		msg := bson.M{"exams": exam, "parents": style}
 		_, err := appendElement(TablePrivateBook, uid, msg)
 		return err
-	}else{
+	} else {
 		msg := bson.M{"exams": exam}
 		_, err := appendElement(TablePrivateBook, uid, msg)
 		return err
@@ -149,4 +149,3 @@ func UnbindPrivateBookExam(uid string, exam string) error {
 	_, err := removeElement(TablePrivateBook, uid, msg)
 	return err
 }
-

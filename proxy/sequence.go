@@ -28,8 +28,8 @@ func createSequence(name string) error {
 	return nil
 }
 
-func getSequenceNext(name string) (uint64,error) {
-	num,_ := getSequenceCount(name)
+func getSequenceNext(name string) (uint64, error) {
+	num, _ := getSequenceCount(name)
 	if num < 1 {
 		_ = createSequence(name)
 	}
@@ -37,21 +37,21 @@ func getSequenceNext(name string) (uint64,error) {
 	update := bson.M{"$inc": bson.M{"count": 1}, "$set": bson.M{"updatedAt": time.Now()}}
 	_, err := updateOneBy(TableSequence, filter, update)
 	if err != nil {
-		return 0,err
+		return 0, err
 	}
-	return num + 1,nil
+	return num + 1, nil
 }
 
-func getSequenceCount(name string) (uint64,error) {
+func getSequenceCount(name string) (uint64, error) {
 	filter := bson.M{"name": name}
 	result, err := findOneBy(TableSequence, filter)
 	if err != nil {
-		return 0,err
+		return 0, err
 	}
 	model := new(Sequence)
 	err1 := result.Decode(model)
 	if err1 != nil {
-		return 0,err1
+		return 0, err1
 	}
-	return model.Count,nil
+	return model.Count, nil
 }

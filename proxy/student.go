@@ -14,14 +14,14 @@ type Student struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
-	Number    string    `json:"number" bson:"number"`
-	WXCreator string    `json:"creator" bson:"creator"`
-	Name      string    `json:"name" bson:"name"`
-	Birthday  string    `json:"birthday" bson:"birthday"`
-	Sex       uint8     `json:"sex" bson:"sex"`
-	Photo     string    `json:"photo" bson:"photo"`
-	Phone     string    `json:"phone" bson:"phone"`
-	IDCard    string    `json:"card" bson:"card"`
+	Number    string `json:"number" bson:"number"`
+	WXCreator string `json:"creator" bson:"creator"`
+	Name      string `json:"name" bson:"name"`
+	Birthday  string `json:"birthday" bson:"birthday"`
+	Sex       uint8  `json:"sex" bson:"sex"`
+	Photo     string `json:"photo" bson:"photo"`
+	Phone     string `json:"phone" bson:"phone"`
+	IDCard    string `json:"card" bson:"card"`
 
 	Books []string `json:"books" bson:"books"`
 }

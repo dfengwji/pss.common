@@ -33,47 +33,47 @@ func CreateAddress(info *Address) error {
 }
 
 func GetAddressNextID() uint64 {
-	num,_ := getSequenceNext(TableAddress)
+	num, _ := getSequenceNext(TableAddress)
 	return num
 }
 
-func GetAddress(uid string) (*Address,error) {
+func GetAddress(uid string) (*Address, error) {
 	result, err := findOne(TableAddress, uid)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	model := new(Address)
 	err1 := result.Decode(model)
 	if err1 != nil {
-		return nil,err1
+		return nil, err1
 	}
-	return model,nil
+	return model, nil
 }
 
-func HadAddress(longitude float32, latitude float32) (bool,error) {
+func HadAddress(longitude float32, latitude float32) (bool, error) {
 	msg := bson.M{"longitude": longitude, "latitude": latitude}
 	had, err := hadOne(TableAddress, msg)
 	if err != nil {
-		return false,err
+		return false, err
 	}
-	return had,nil
+	return had, nil
 }
 
-func GetAllAddresses() ([]*Address,error) {
+func GetAllAddresses() ([]*Address, error) {
 	cursor, err1 := findAll(TableAddress, 0)
 	if err1 != nil {
-		return nil,err1
+		return nil, err1
 	}
 	var items = make([]*Address, 0, 200)
 	for cursor.Next(context.Background()) {
 		var node = new(Address)
 		if err := cursor.Decode(node); err != nil {
-			return nil,err
+			return nil, err
 		} else {
 			items = append(items, node)
 		}
 	}
-	return items,nil
+	return items, nil
 }
 
 func dropAddress() error {

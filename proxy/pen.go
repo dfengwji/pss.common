@@ -82,7 +82,7 @@ func GetAllPens() ([]*Pen, error) {
 	return items, nil
 }
 
-func GetPensByUser(user string) ([]*Pen,error) {
+func GetPensByUser(user string) ([]*Pen, error) {
 	msg := bson.M{"user": user, "deleteAt": new(time.Time)}
 	cursor, err1 := findMany(TablePen, msg, 0)
 	if err1 != nil {

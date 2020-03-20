@@ -31,7 +31,7 @@ func CreateAdmin(info *Admin) (error, string) {
 }
 
 func GetAdminNextID() uint64 {
-	num,_ := getSequenceNext(TableAdmin)
+	num, _ := getSequenceNext(TableAdmin)
 	return num
 }
 
@@ -47,24 +47,24 @@ func UpdateAdminInfo(uid string, name string, phone string, email string) error 
 	return err
 }
 
-func GetAdmin(uid string) (*Admin,error) {
+func GetAdmin(uid string) (*Admin, error) {
 	admin := new(Admin)
 	result, err := findOne(TableAdmin, uid)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	err1 := result.Decode(admin)
 	if err1 != nil {
-		return nil,err1
+		return nil, err1
 	}
-	return admin,nil
+	return admin, nil
 }
 
-func GetAllAdmins() ([]*Admin,error) {
+func GetAllAdmins() ([]*Admin, error) {
 	var items = make([]*Admin, 0, 100)
 	cursor, err1 := findAll(TableAdmin, 0)
 	if err1 != nil {
-		return nil,err1
+		return nil, err1
 	}
 	defer cursor.Close(context.Background())
 	/*err := cursor.All(context.Background(), items)
@@ -75,12 +75,12 @@ func GetAllAdmins() ([]*Admin,error) {
 	for cursor.Next(context.Background()) {
 		var node = new(Admin)
 		if err := cursor.Decode(node); err != nil {
-			return nil,err
+			return nil, err
 		} else {
 			items = append(items, node)
 		}
 	}
-	return items,nil
+	return items, nil
 }
 
 func RemoveAdmin(uid string) error {

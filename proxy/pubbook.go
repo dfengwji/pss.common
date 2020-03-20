@@ -18,7 +18,7 @@ type PublicBook struct {
 	Subject     uint16             `json:"type" bson:"type"`
 	Cover       string             `json:"cover" bson:"cover"`
 	Score       uint16             `json:"score" bson:"score"`
-	PDF         string				`json:"pdf" bson:"pdf"`
+	PDF         string             `json:"pdf" bson:"pdf"`
 	Styles      []string           `json:"styles" bson:"styles"`
 }
 

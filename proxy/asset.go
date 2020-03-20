@@ -24,7 +24,7 @@ type Asset struct {
 	Version     string             `json:"version" bson:"version"`
 	Format      string             `json:"format" bson:"format"`
 	MD5         string             `json:"md5" bson:"md5"`
-	Owner      string			   `json:"owner" bson:"owner"`
+	Owner       string             `json:"owner" bson:"owner"`
 	File        string             `json:"file_uid" bson:"file_uid"`
 }
 
@@ -37,21 +37,21 @@ func CreateAsset(info *Asset) (error, string) {
 }
 
 func GetAssetNextID() uint64 {
-	num,_ := getSequenceNext(TableAsset)
+	num, _ := getSequenceNext(TableAsset)
 	return num
 }
 
-func GetAssetFile(uid string) (*FileInfo,error) {
+func GetAssetFile(uid string) (*FileInfo, error) {
 	if len(uid) < 2 {
-		return nil,errors.New("db asset.files uid is empty ")
+		return nil, errors.New("db asset.files uid is empty ")
 	}
 	result, err := findOne(TableAsset, uid)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	info := new(FileInfo)
 	err1 := result.Decode(&info)
-	return info,err1
+	return info, err1
 }
 
 func RemoveAsset(uid string) error {
@@ -69,40 +69,40 @@ func DeleteAssetFile(file string) bool {
 	return false
 }
 
-func GetAsset(uid string) (*Asset,error) {
+func GetAsset(uid string) (*Asset, error) {
 	if len(uid) < 2 {
-		return nil,errors.New("db asset uid is empty of GetAsset")
+		return nil, errors.New("db asset uid is empty of GetAsset")
 	}
 
 	result, err := findOne(TableAsset, uid)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	model := new(Asset)
 	err1 := result.Decode(&model)
 	if err1 != nil {
-		return nil,err1
+		return nil, err1
 	}
-	return model,nil
+	return model, nil
 }
 
-func GetAssetsByOwner(owner string) ([]*Asset,error) {
+func GetAssetsByOwner(owner string) ([]*Asset, error) {
 	var items = make([]*Asset, 0, 20)
 	def := new(time.Time)
-	filter := bson.M{"owner":owner, "deleteAt": def}
+	filter := bson.M{"owner": owner, "deleteAt": def}
 	cursor, err1 := findMany(TableAsset, filter, 0)
 	if err1 != nil {
-		return nil,err1
+		return nil, err1
 	}
 	for cursor.Next(context.Background()) {
 		var node = new(Asset)
 		if err := cursor.Decode(&node); err != nil {
-			return nil,err
+			return nil, err
 		} else {
 			items = append(items, node)
 		}
 	}
-	return items,nil
+	return items, nil
 }
 
 func UpdateAssetLanguage(uid string, language string) error {

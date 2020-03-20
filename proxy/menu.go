@@ -16,9 +16,8 @@ type CourseMenu struct {
 	Name        string             `json:"name" bson:"name"`
 	Parent      string             `json:"parent" bson:"parent"`
 	Cover       string             `json:"cover" bson:"cover"`
-	Remark      string 				`json:"remark" bson:"remark"`
+	Remark      string             `json:"remark" bson:"remark"`
 }
-
 
 func CreateCourseMenu(info *CourseMenu) error {
 	_, err := insertOne(TableCourseMenu, info)

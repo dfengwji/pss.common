@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const timeOut  = 10*time.Second
+const timeOut = 10 * time.Second
 
 func insertOne(collection string, info interface{}) (interface{}, error) {
 	c := noSql.Collection(collection)
@@ -115,7 +115,7 @@ func updateOne(collection string, uid string, data bson.M) (int64, error) {
 
 /**
 往数组里面追加一个元素
- */
+*/
 func appendElement(collection string, uid string, data bson.M) (int64, error) {
 	objID, e := primitive.ObjectIDFromHex(uid)
 	if e != nil {
@@ -128,7 +128,7 @@ func appendElement(collection string, uid string, data bson.M) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeOut)
 	defer cancel()
 	filter := bson.M{"_id": objID}
-	node := bson.M{"$push": data, "$set":bson.M{"updatedAt":time.Now()}}
+	node := bson.M{"$push": data, "$set": bson.M{"updatedAt": time.Now()}}
 	result, err := c.UpdateOne(ctx, filter, node)
 	if err != nil {
 		return 0, err
@@ -138,7 +138,7 @@ func appendElement(collection string, uid string, data bson.M) (int64, error) {
 
 /**
 从数组里面移除一个元素
- */
+*/
 func removeElement(collection string, uid string, data bson.M) (int64, error) {
 	objID, e := primitive.ObjectIDFromHex(uid)
 	if e != nil {
@@ -151,7 +151,7 @@ func removeElement(collection string, uid string, data bson.M) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeOut)
 	defer cancel()
 	filter := bson.M{"_id": objID}
-	node := bson.M{"$pull": data, "$set":bson.M{"updatedAt":time.Now()}}
+	node := bson.M{"$pull": data, "$set": bson.M{"updatedAt": time.Now()}}
 	result, err := c.UpdateOne(ctx, filter, node)
 	if err != nil {
 		return 0, err
@@ -250,7 +250,7 @@ func findMany(collection string, filter bson.M, limit int64) (*mongo.Cursor, err
 	var err error
 	if limit > 0 {
 		cursor, err = c.Find(ctx, filter, options.Find().SetLimit(limit))
-	}else{
+	} else {
 		cursor, err = c.Find(ctx, filter)
 	}
 	if err != nil {
@@ -302,7 +302,7 @@ func findAll(collection string, limit int64) (*mongo.Cursor, error) {
 	var err error
 	if limit > 0 {
 		cursor, err = c.Find(ctx, filter, options.Find().SetLimit(limit))
-	}else{
+	} else {
 		cursor, err = c.Find(ctx, filter)
 	}
 	if err != nil {

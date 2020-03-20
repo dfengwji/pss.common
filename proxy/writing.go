@@ -54,7 +54,7 @@ func GetWriting(uid string) (*Writing, error) {
 
 func GetWritingsByUser(user uint64, book string) ([]*Writing, error) {
 	filter := bson.M{"user": user, "book": book, "deleteAt": new(time.Time)}
-	cursor, err := findManyByOpts(TableWriting, filter, options.Find().SetProjection(bson.M{"dots":0}))
+	cursor, err := findManyByOpts(TableWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func GetWritingByStyle(user uint64, style string) (*Writing, error) {
 }
 
 func GetWritingDots(uid string) (*Writing, error) {
-	result, err := findOneOfField(TableWriting, uid, bson.M{"dots":1, "dotNum":1})
+	result, err := findOneOfField(TableWriting, uid, bson.M{"dots": 1, "dotNum": 1})
 	if err != nil {
 		return nil, err
 	}
@@ -112,13 +112,13 @@ func GetWritingDots(uid string) (*Writing, error) {
 }
 
 func UpdateWritingDots(uid string, stamp uint64, num uint16, hex string, duration uint16) error {
-	msg := bson.M{"dotStamp": stamp, "dotNum": num, "dots": hex, "duration":duration, "updatedAt": time.Now()}
+	msg := bson.M{"dotStamp": stamp, "dotNum": num, "dots": hex, "duration": duration, "updatedAt": time.Now()}
 	_, err := updateOne(TableWriting, uid, msg)
 	return err
 }
 
 func GetAllWritings() ([]*Writing, error) {
-	cursor, err1 := findAllByOpts(TableWriting,  options.Find().SetProjection(bson.M{"dots":0}))
+	cursor, err1 := findAllByOpts(TableWriting, options.Find().SetProjection(bson.M{"dots": 0}))
 	if err1 != nil {
 		return nil, err1
 	}

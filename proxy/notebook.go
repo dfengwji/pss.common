@@ -15,11 +15,11 @@ type NoteBook struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
-	Type       uint8 				`json:"type" bson:"type"`
-	Page       uint16             `json:"page" bson:"page"`
-	Author     uint64				`json:"author" bson:"author"`
-	Cover       string             `json:"cover" bson:"cover"`
-	Remark      string             `json:"remark" bson:"remark"`
+	Type   uint8  `json:"type" bson:"type"`
+	Page   uint16 `json:"page" bson:"page"`
+	Author uint64 `json:"author" bson:"author"`
+	Cover  string `json:"cover" bson:"cover"`
+	Remark string `json:"remark" bson:"remark"`
 }
 
 func CreateNoteBook(info *NoteBook) error {

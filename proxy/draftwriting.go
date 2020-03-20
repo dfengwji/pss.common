@@ -17,7 +17,7 @@ type DraftWriting struct {
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 	Pen         uint64             `json:"pen" bson:"pen"`
 	Author      string             `json:"author" bson:"author"`
-	Draft       string `json:"draft" bson:"draft"`
+	Draft       string             `json:"draft" bson:"draft"`
 	Book        uint64             `json:"book" bson:"book"`
 	Page        uint16             `json:"page" bson:"page"`
 	Number      uint16             `json:"number" bson:"number"`
