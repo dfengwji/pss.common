@@ -93,6 +93,12 @@ func UpdateClassFormTeacher(uid string, teacher string) error {
 	return err
 }
 
+func UpdateClassTeachers(uid string, teachers []string) error {
+	msg := bson.M{"instructors": teachers, "updatedAt": time.Now()}
+	_, err := updateOne(TableClasses, uid, msg)
+	return err
+}
+
 func UpdateClassBook(uid string, book string) error {
 	msg := bson.M{"book": book, "updatedAt": time.Now()}
 	_, err := updateOne(TableClasses, uid, msg)
