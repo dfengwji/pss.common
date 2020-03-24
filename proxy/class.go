@@ -24,8 +24,8 @@ type EduClass struct {
 	Remark      string    `json:"remark" bson:"remark"`
 
 	Scene       string   `json:"scene" bson:"scene"`
-	FormTeacher string   `json:"teacher" bson:"teacher"`
-	Instructors []string `json:"instructors" bson:"instructors"`
+	Master 		string   `json:"master" bson:"master"`
+	Teachers    []string `json:"teachers" bson:"teachers"`
 	Students    []string `json:"students" bson:"students"`
 	Workbooks   []string `json:"workbooks" bson:"workbooks"`
 }
@@ -87,14 +87,14 @@ func UpdateClassTime(uid string, from time.Time, to time.Time, day string, hold 
 	return err
 }
 
-func UpdateClassFormTeacher(uid string, teacher string) error {
-	msg := bson.M{"teacher": teacher, "updatedAt": time.Now()}
+func UpdateClassMaster(uid string, teacher string) error {
+	msg := bson.M{"master": teacher, "updatedAt": time.Now()}
 	_, err := updateOne(TableClasses, uid, msg)
 	return err
 }
 
 func UpdateClassTeachers(uid string, teachers []string) error {
-	msg := bson.M{"instructors": teachers, "updatedAt": time.Now()}
+	msg := bson.M{"teachers": teachers, "updatedAt": time.Now()}
 	_, err := updateOne(TableClasses, uid, msg)
 	return err
 }
@@ -120,13 +120,13 @@ func AppendClassStudent(uid string, student string) error {
 }
 
 func AppendClassTeacher(uid string, teacher string) error {
-	msg := bson.M{"instructors": teacher}
+	msg := bson.M{"teachers": teacher}
 	_, err := appendElement(TableClasses, uid, msg)
 	return err
 }
 
 func UnbindClassTeacher(uid string, teacher string) error {
-	msg := bson.M{"instructors": teacher}
+	msg := bson.M{"teachers": teacher}
 	_, err := removeElement(TableClasses, uid, msg)
 	return err
 }

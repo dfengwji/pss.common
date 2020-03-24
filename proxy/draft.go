@@ -22,7 +22,10 @@ type CourseDraft struct {
 	Menu        string             `json:"menu" bson:"menu"`
 	Start       uint64             `json:"start" bson:"start"`
 	TaskUID     string             `json:"task" bson:"task"`
+	Open        uint8 				`json:"open" bson:"open"`
+	Tags 		[]string 			`json:"tags" bson:"tags"`
 	Audios      []string           `json:"audios" bson:"audios"`
+	OpenTargets	[]string 			`json:"targets" bson:"targets"`
 }
 
 func CreateCourseDraft(info *CourseDraft) error {
@@ -103,6 +106,12 @@ func UpdateCourseDraftVideo(uid string, video string) error {
 	return err
 }
 
+func UpdateCourseDraftTags(uid string, tags []string) error {
+	msg := bson.M{"tags": tags, "updatedAt": time.Now()}
+	_, err := updateOne(TableCourseDraft, uid, msg)
+	return err
+}
+
 func UpdateCourseDraftCover(uid string, cover string) error {
 	msg := bson.M{"cover": cover, "updatedAt": time.Now()}
 	_, err := updateOne(TableCourseDraft, uid, msg)
@@ -114,3 +123,11 @@ func UpdateCourseDraftTask(uid string, task string) error {
 	_, err := updateOne(TableCourseDraft, uid, msg)
 	return err
 }
+
+func UpdateCourseDraftTargets(uid string,open uint8, targets []string) error {
+	msg := bson.M{"open":open, "targets": targets, "updatedAt": time.Now()}
+	_, err := updateOne(TableCourseDraft, uid, msg)
+	return err
+}
+
+

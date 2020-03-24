@@ -25,6 +25,7 @@ type MicroCourse struct {
 	Menu        string             `json:"menu" bson:"menu"`
 	Video       string             `json:"video" bson:"video"`
 	Tags        []string           `json:"tags" bson:"tags"`
+	OpenTargets	[]string 			`json:"targets" bson:"targets"`
 }
 
 func CreateMicroCourse(info *MicroCourse) error {
@@ -93,8 +94,14 @@ func GetMicroCoursesByAuthor(author string) ([]*MicroCourse, error) {
 	return items, nil
 }
 
-func UpdateMicroCourseBase(uid string, name string, remark string, open uint8) error {
-	msg := bson.M{"name": name, "remark": remark, "open": open, "updatedAt": time.Now()}
+func UpdateMicroCourseBase(uid string, name string, remark string) error {
+	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
+	_, err := updateOne(TableMicroCourse, uid, msg)
+	return err
+}
+
+func UpdateMicroCourseOpen(uid string, open uint8, targets []string) error {
+	msg := bson.M{"open": open, "targets":targets, "updatedAt": time.Now()}
 	_, err := updateOne(TableMicroCourse, uid, msg)
 	return err
 }
