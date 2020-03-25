@@ -23,13 +23,17 @@ type EduClass struct {
 	HoldSeconds uint16    `json:"hold" bson:"hold"`
 	Remark      string    `json:"remark" bson:"remark"`
 
-	NickName   string `json:"nickName" bson:"nickName"`
+	RealName   string `json:"realName" bson:"realName"`
+	Grade      uint8  `json:"grade" bson:"grade"`
+	Counter    uint8  `json:"counter" bson:"counter"`
+	EnrolYear  uint16 `json:"enrolYear" bson:"enrolYear"`
+	EnrolMonth uint8  `json:"enrolMonth" bson:"enrolMonth"`
 
-	Scene       string   `json:"scene" bson:"scene"`
-	Master 		string   `json:"master" bson:"master"`
-	Teachers    []string `json:"teachers" bson:"teachers"`
-	Students    []string `json:"students" bson:"students"`
-	Workbooks   []string `json:"workbooks" bson:"workbooks"`
+	Scene     string   `json:"scene" bson:"scene"`
+	Master    string   `json:"master" bson:"master"`
+	Teachers  []string `json:"teachers" bson:"teachers"`
+	Students  []string `json:"students" bson:"students"`
+	Workbooks []string `json:"workbooks" bson:"workbooks"`
 }
 
 func CreateClass(info *EduClass) error {
