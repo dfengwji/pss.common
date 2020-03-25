@@ -106,6 +106,12 @@ func UpdateCourseDraftVideo(uid string, video string) error {
 	return err
 }
 
+func UpdateCourseDraftMenu(uid string, menu string) error {
+	msg := bson.M{"menu": menu, "updatedAt": time.Now()}
+	_, err := updateOne(TableCourseDraft, uid, msg)
+	return err
+}
+
 func UpdateCourseDraftTags(uid string, tags []string) error {
 	msg := bson.M{"tags": tags, "updatedAt": time.Now()}
 	_, err := updateOne(TableCourseDraft, uid, msg)
