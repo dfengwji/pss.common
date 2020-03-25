@@ -115,7 +115,17 @@ const (
 	*/
 	TableApply = "applies"
 
+	/*
+	 微课分类
+	 */
 	TableCourseMenu   = "courseMenus"
+	/**
+	微课主题
+	 */
+	TableCourseTheme = "courseThemes"
+	/*
+	微课
+	 */
 	TableMicroCourse  = "courses"
 	TableCourseDraft  = "drafts"
 	TableDraftWriting = "draftWritings"

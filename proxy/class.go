@@ -23,6 +23,8 @@ type EduClass struct {
 	HoldSeconds uint16    `json:"hold" bson:"hold"`
 	Remark      string    `json:"remark" bson:"remark"`
 
+	NickName   string `json:"nickName" bson:"nickName"`
+
 	Scene       string   `json:"scene" bson:"scene"`
 	Master 		string   `json:"master" bson:"master"`
 	Teachers    []string `json:"teachers" bson:"teachers"`
