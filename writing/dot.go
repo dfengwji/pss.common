@@ -25,7 +25,7 @@ type DotInfo struct {
 	FX     uint32
 	FY     uint32
 	Color  uint32
-	stamp  uint64
+	Stamp  uint64
 	hex    string
 }
 
@@ -67,8 +67,8 @@ func (mine *DotInfo) ParseHex(hex string) error {
 	mine.FX = uint32(fx)
 	fy, _ := strconv.ParseUint(hex[16:18], 16, 32)
 	mine.FY = uint32(fy)
-	color, _ := strconv.ParseUint(hex[18:20], 16, 32)
-	mine.Color = uint32(color)
-	mine.stamp, _ = strconv.ParseUint(hex[20:30], 16, 64)
+	col, _ := strconv.ParseUint(hex[18:20], 16, 32)
+	mine.Color = uint32(col)
+	mine.Stamp, _ = strconv.ParseUint(hex[20:30], 16, 64)
 	return nil
 }
