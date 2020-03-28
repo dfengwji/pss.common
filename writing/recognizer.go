@@ -100,7 +100,7 @@ func (mine *RecognizerInfo) Bytes() []byte {
 		s := group.Strokes[len(group.Strokes) - 1]
 		s.Xs = append(s.Xs, float64(dot.X*100+dot.FX)-point.X)
 		s.Ys = append(s.Ys, float64(dot.Y*100+dot.FY)-point.Y)
-		s.Ts = append(s.Ts, dot.stamp)
+		s.Ts = append(s.Ts, dot.Stamp)
 		if dot.Action == DotActionUp && i < length - 1 {
 			tmp := mine.NewStroke()
 			group.Strokes = append(group.Strokes, tmp)
