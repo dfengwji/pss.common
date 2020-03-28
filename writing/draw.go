@@ -4,32 +4,33 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/fogleman/gg"
 	"image"
 	"image/color"
 	"image/png"
 	"math"
 	"math/cmplx"
+
+	"github.com/fogleman/gg"
 )
 
 const (
-	ColorBlue = 1
-	ColorGreen = 2
-	ColorCyan = 3
-	ColorRed = 4
+	ColorBlue   = 1
+	ColorGreen  = 2
+	ColorCyan   = 3
+	ColorRed    = 4
 	ColorPurple = 5
 	ColorYellow = 6
-	ColorBlack = 7
+	ColorBlack  = 7
 )
 
 const (
-	ColorHexBlue = "#4082E3"
-	ColorHexGreen = "#65F44D"
-	ColorHexCyan = "#40E1D8"
-	ColorHexRed = "#EF3737"
+	ColorHexBlue   = "#4082E3"
+	ColorHexGreen  = "#65F44D"
+	ColorHexCyan   = "#40E1D8"
+	ColorHexRed    = "#EF3737"
 	ColorHexPurple = "#CF0070"
 	ColorHexYellow = "#FFDA57"
-	ColorHexBlack= "#0A0A0A"
+	ColorHexBlack  = "#0A0A0A"
 )
 
 type Vector2 struct {
@@ -38,11 +39,11 @@ type Vector2 struct {
 }
 
 var (
-	red   color.Color = color.RGBA{239, 55, 55, 255}
-	blue  color.Color = color.RGBA{64, 130, 227, 255}
-	green color.Color = color.RGBA{101, 244, 77, 255}
-	black color.Color = color.RGBA{10, 10, 10, 255}
-	cyan  color.Color = color.RGBA{64, 225, 216, 255}
+	red    color.Color = color.RGBA{239, 55, 55, 255}
+	blue   color.Color = color.RGBA{64, 130, 227, 255}
+	green  color.Color = color.RGBA{101, 244, 77, 255}
+	black  color.Color = color.RGBA{10, 10, 10, 255}
+	cyan   color.Color = color.RGBA{64, 225, 216, 255}
 	purple color.Color = color.RGBA{207, 0, 112, 255}
 	yellow color.Color = color.RGBA{255, 218, 87, 255}
 )
@@ -81,7 +82,7 @@ func DrawPoints(points []*DotInfo, uid string) error {
 		canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
 		canvas.SetRGB(0, 0, 0)
 		canvas.SetLineCapRound()
-	}else{
+	} else {
 		canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
 		canvas.SetRGB(0, 0, 0)
 		canvas.SetLineCapRound()
@@ -125,6 +126,34 @@ func DrawPointSamples(points []*PointSample) {
 	if err2 != nil {
 		fmt.Println(err2.Error())
 	}
+}
+
+func SavePNG(points []*DotInfo, _filepath string) error {
+	length := len(points)
+	if length < 1 {
+		return errors.New("none points")
+	}
+
+	if canvas == nil {
+		canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
+		canvas.SetLineCapRound()
+	}
+
+	canvas.SetRGB(1, 1, 1)
+	canvas.Clear()
+	imageNum += length
+	isUp := false
+	for i := 0; i < length; i++ {
+		up := drawGraph(points[i])
+		if up {
+			isUp = true
+		}
+	}
+
+	if isUp {
+		return canvas.SavePNG(_filepath)
+	}
+	return errors.New("isUp is false")
 }
 
 func drawGraph(point *DotInfo) bool {
@@ -186,24 +215,24 @@ func drawGraph2(point *PointSample) {
 func getColor(color uint32) color.Color {
 	if color == ColorBlue {
 		return blue
-	}else if color == ColorBlack {
+	} else if color == ColorBlack {
 		return black
-	}else if color == ColorCyan {
+	} else if color == ColorCyan {
 		return cyan
-	}else if color == ColorGreen {
+	} else if color == ColorGreen {
 		return green
-	}else  if color == ColorPurple {
+	} else if color == ColorPurple {
 		return purple
-	}else if color == ColorYellow {
+	} else if color == ColorYellow {
 		return yellow
-	}else if color == ColorRed {
+	} else if color == ColorRed {
 		return red
-	}else{
+	} else {
 		return black
 	}
 }
 
-func touchDown(x float64, y float64, color color.Color,scale uint8, force uint16) {
+func touchDown(x float64, y float64, color color.Color, scale uint8, force uint16) {
 	pointIndex = 0
 
 	canvas.SetColor(color)
@@ -214,7 +243,7 @@ func touchDown(x float64, y float64, color color.Color,scale uint8, force uint16
 	lastPoint.Y = y
 }
 
-func touchMove(x float64, y float64,color color.Color,scale uint8, force uint16) {
+func touchMove(x float64, y float64, color color.Color, scale uint8, force uint16) {
 	pointIndex += 1
 	//fmt.Println()
 	//fmt.Printf("x = %f; y = %f", x, y)
