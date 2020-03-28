@@ -175,10 +175,11 @@ func drawGraph(point *DotInfo) bool {
 	y := py + paperOffset.Y
 	color := getColor(point.Color)
 	//y := roundNum(py, 13)
+	gWidth = float64(point.Scale) * 2.0
 	if point.Action == DotActionDown {
-		touchDown(x, y, color, point.Scale, point.Force)
+		touchDown(x, y, color, 1.0, point.Force)
 	} else if point.Action == DotActionMove {
-		touchMove(x, y, color, point.Scale, point.Force)
+		touchMove(x, y, color, 1.0, point.Force)
 	} else if point.Action == DotActionUp {
 		touchUp(x, y, color)
 		return true
@@ -271,11 +272,13 @@ func touchUp(x float64, y float64, color color.Color) {
 func drawPen(scale float64, offsetX float64, offsetY float64, penWidth float64, x float64, y float64, force uint16, ntype uint8) {
 	//DV.paint.setStrokeCap(Paint.Cap.ROUND)
 	//DV.paint.setStyle(Paint.Style.FILL)
+	ws := 1.0
+	wh := ws * 20
 	if pointIndex == 0 { //down
 		gX0 = x*scale + offsetX + 0.1
 		gY0 = y*scale + offsetY
 		//g_p0 = Math.max(1, penWidth * 3 * force / 1023) * scale;
-		gP0 = getPenWidth(penWidth, force) * scale
+		gP0 = getPenWidth(penWidth, force) * ws
 		canvas.DrawPoint(gX0, gY0, 0.5)
 		return
 	}
@@ -284,12 +287,12 @@ func drawPen(scale float64, offsetX float64, offsetY float64, penWidth float64, 
 		gX1 = x*scale + offsetX + 0.1
 		gY1 = y*scale + offsetY
 		//g_p1 = Math.max(1, penWidth * 3 * force / 1023) * scale;
-		gP1 = getPenWidth(penWidth, force) * scale
+		gP1 = getPenWidth(penWidth, force) * ws
 
 		gVx01 = gX1 - gX0
 		gVy01 = gY1 - gY0
 		// instead of dividing tangent/norm by two, we multiply norm by 2
-		gNorm = math.Sqrt(gVx01*gVx01+gVy01*gVy01+0.0001) * 2
+		gNorm = math.Sqrt(gVx01*gVx01+gVy01*gVy01+0.0001) * wh
 		gVx01 = gVx01 / gNorm * gP0
 		gVy01 = gVy01 / gNorm * gP0
 		gNX0 = gVy01
@@ -302,14 +305,14 @@ func drawPen(scale float64, offsetX float64, offsetY float64, penWidth float64, 
 		gX3 = x*scale + offsetX + 0.1
 		gY3 = y*scale + offsetY
 		//g_p3 = Math.max(1, penWidth * 3 * force / 1023) * scale;
-		gP3 = getPenWidth(penWidth, force) * scale
+		gP3 = getPenWidth(penWidth, force) * ws
 
 		gX2 = (gX1 + gX3) / 2
 		gY2 = (gY1 + gY3) / 2
 		gP2 = (gP1 + gP3) / 2
 		gVx21 = gX1 - gX2
 		gVy21 = gY1 - gY2
-		gNorm = math.Sqrt(gVx21*gVx21+gVy21*gVy21+0.0001) * 2
+		gNorm = math.Sqrt(gVx21*gVx21+gVy21*gVy21+0.0001) * wh
 
 		gVx21 = gVx21 / gNorm * gP2
 		gVy21 = gVy21 / gNorm * gP2
@@ -346,10 +349,10 @@ func drawPen(scale float64, offsetX float64, offsetY float64, penWidth float64, 
 		gX2 = x*scale + offsetX + 0.1
 		gY2 = y*scale + offsetY
 		//g_p2 = Math.max(1, penWidth * 3 * force / 1023) * scale;
-		gP2 = getPenWidth(penWidth, force) * scale
+		gP2 = getPenWidth(penWidth, force) * ws
 		gVx21 = gX1 - gX2
 		gVy21 = gY1 - gY2
-		gNorm = math.Sqrt(gVx21*gVx21+gVy21*gVy21+0.0001) * 2
+		gNorm = math.Sqrt(gVx21*gVx21+gVy21*gVy21+0.0001) * wh
 		gVx21 = gVx21 / gNorm * gP2
 		gVy21 = gVy21 / gNorm * gP2
 		gNX2 = -gVy21
