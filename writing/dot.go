@@ -30,10 +30,10 @@ type DotInfo struct {
 }
 
 type PointSample struct {
-	Color color.Color
+	Color  color.Color
 	Action uint8
 	Force  uint16
-	Scale uint8
+	Scale  uint8
 	X      float64
 	Y      float64
 }
@@ -71,4 +71,9 @@ func (mine *DotInfo) ParseHex(hex string) error {
 	mine.Color = uint32(col)
 	mine.Stamp, _ = strconv.ParseUint(hex[20:30], 16, 64)
 	return nil
+}
+
+func (this *DotInfo) AdjustTimestamp(_offset uint64) {
+	this.Stamp = this.Stamp + _offset
+
 }
