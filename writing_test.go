@@ -1,4 +1,4 @@
-package pss_common
+package main
 
 import (
 	"fmt"
