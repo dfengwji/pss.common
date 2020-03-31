@@ -73,7 +73,7 @@ func (mine *DotInfo) ParseHex(hex string) error {
 	return nil
 }
 
-func (this *DotInfo) AdjustTimestamp(_offset uint64) {
-	this.Stamp = this.Stamp + _offset
+func (mine *DotInfo) AdjustTimestamp(_offset uint64) {
+	mine.Stamp = mine.Stamp + _offset
 
 }
