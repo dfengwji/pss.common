@@ -14,6 +14,7 @@ type CourseMenu struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 	Name        string             `json:"name" bson:"name"`
+	Beta        uint8 				`json:"beta" bson:"beta"`
 	Parent      string             `json:"parent" bson:"parent"`
 	Cover       string             `json:"cover" bson:"cover"`
 	Remark      string             `json:"remark" bson:"remark"`
@@ -105,6 +106,12 @@ func GetCourseMenusByTop(parent string) ([]*CourseMenu, error) {
 
 func UpdateCourseMenuBase(uid string, name string, remark string) error {
 	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
+	_, err := updateOne(TableCourseMenu, uid, msg)
+	return err
+}
+
+func UpdateCourseMenuBeta(uid string, beta uint8) error {
+	msg := bson.M{"beta": beta, "updatedAt": time.Now()}
 	_, err := updateOne(TableCourseMenu, uid, msg)
 	return err
 }

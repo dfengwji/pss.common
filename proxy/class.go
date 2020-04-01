@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -120,24 +121,36 @@ func RemoveClass(uid string) bool {
 }
 
 func AppendClassStudent(uid string, student string) error {
+	if len(student) < 1 {
+		return errors.New("the student uid is empty")
+	}
 	msg := bson.M{"students": student}
 	_, err := appendElement(TableClasses, uid, msg)
 	return err
 }
 
 func AppendClassTeacher(uid string, teacher string) error {
+	if len(teacher) < 1 {
+		return errors.New("the teacher uid is empty")
+	}
 	msg := bson.M{"teachers": teacher}
 	_, err := appendElement(TableClasses, uid, msg)
 	return err
 }
 
 func UnbindClassTeacher(uid string, teacher string) error {
+	if len(teacher) < 1 {
+		return errors.New("the teacher uid is empty")
+	}
 	msg := bson.M{"teachers": teacher}
 	_, err := removeElement(TableClasses, uid, msg)
 	return err
 }
 
 func UnbindClassStudent(uid string, student string) error {
+	if len(student) < 1 {
+		return errors.New("the student uid is empty")
+	}
 	msg := bson.M{"students": student}
 	_, err := removeElement(TableClasses, uid, msg)
 	return err

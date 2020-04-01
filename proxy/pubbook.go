@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -132,12 +133,18 @@ func UpdatePublicBookStyles(uid string, styles []string) error {
 }
 
 func AppendPublicBookStyle(uid string, style string) error {
+	if len(style) < 1 {
+		return errors.New("the style uid is empty")
+	}
 	msg := bson.M{"styles": style}
 	_, err := appendElement(TablePublicBook, uid, msg)
 	return err
 }
 
 func UnbindPublicBookStyle(uid string, style string) error {
+	if len(style) < 1 {
+		return errors.New("the style uid is empty")
+	}
 	msg := bson.M{"styles": style}
 	_, err := removeElement(TablePublicBook, uid, msg)
 	return err

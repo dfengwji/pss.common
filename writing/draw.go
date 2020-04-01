@@ -48,7 +48,7 @@ var (
 	yellow color.Color = color.RGBA{255, 218, 87, 255}
 )
 
-var canvasSize = Vector2{X: 600, Y: 844}
+var canvasSize = Vector2{X: 600, Y: 800}
 var paperSize = Vector2{X: 290, Y: 210}
 var paperOffset = Vector2{X: 0, Y: 0}
 var codepointX = 1.524
