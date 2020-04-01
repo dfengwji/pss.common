@@ -142,18 +142,11 @@ func SavePNG(points []*DotInfo, _filepath string) error {
 	canvas.SetRGB(1, 1, 1)
 	canvas.Clear()
 	imageNum += length
-	isUp := false
 	for i := 0; i < length; i++ {
-		up := drawGraph(points[i])
-		if up {
-			isUp = true
-		}
+		drawGraph(points[i])
 	}
 
-	if isUp {
-		return canvas.SavePNG(_filepath)
-	}
-	return errors.New("isUp is false")
+	return canvas.SavePNG(_filepath)
 }
 
 func drawGraph(point *DotInfo) bool {
