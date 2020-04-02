@@ -41,6 +41,12 @@ func UpdateAdminPassword(uid string, psw string) error {
 	return err
 }
 
+func UpdateAdminScene(uid string, scene string) error {
+	msg := bson.M{"scene": scene, "updatedAt": time.Now()}
+	_, err := updateOne(TableAdmin, uid, msg)
+	return err
+}
+
 func UpdateAdminInfo(uid string, name string, phone string, email string) error {
 	msg := bson.M{"phone": phone, "email": email, "name": name, "updatedAt": time.Now()}
 	_, err := updateOne(TableAdmin, uid, msg)
