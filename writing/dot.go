@@ -14,7 +14,7 @@ const (
 	DotActionHover = 3
 )
 
-const DotHexLength = 30
+const DotHexLength = 31
 
 type DotInfo struct {
 	Action uint8
@@ -69,7 +69,32 @@ func (mine *DotInfo) ParseHex(hex string) error {
 	mine.FY = uint32(fy)
 	col, _ := strconv.ParseUint(hex[18:20], 16, 32)
 	mine.Color = uint32(col)
-	mine.Stamp, _ = strconv.ParseUint(hex[20:30], 16, 64)
+	mine.Stamp, _ = strconv.ParseUint(hex[20:], 16, 64)
+	return nil
+}
+
+func (mine *DotInfo) ParseHexV1(hex string, hexLength int) error {
+	if len(hex) < hexLength {
+		return errors.New(fmt.Sprintf("the length of hex is less than %v", hexLength))
+	}
+	mine.hex = hex
+	act, _ := strconv.ParseUint(hex[0:2], 10, 8)
+	mine.Action = uint8(act)
+	f, _ := strconv.ParseUint(hex[2:5], 16, 32)
+	mine.Force = uint16(f)
+	s, _ := strconv.ParseUint(hex[5:6], 16, 32)
+	mine.Scale = uint8(s)
+	x, _ := strconv.ParseUint(hex[6:10], 16, 32)
+	mine.X = uint32(x)
+	y, _ := strconv.ParseUint(hex[10:14], 16, 32)
+	mine.Y = uint32(y)
+	fx, _ := strconv.ParseUint(hex[14:16], 16, 32)
+	mine.FX = uint32(fx)
+	fy, _ := strconv.ParseUint(hex[16:18], 16, 32)
+	mine.FY = uint32(fy)
+	col, _ := strconv.ParseUint(hex[18:20], 16, 32)
+	mine.Color = uint32(col)
+	mine.Stamp, _ = strconv.ParseUint(hex[20:], 16, 64)
 	return nil
 }
 
