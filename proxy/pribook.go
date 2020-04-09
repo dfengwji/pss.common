@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -132,6 +133,9 @@ func AppendPrivateBookExam(uid string, exam string, style string) error {
 		_, err := appendElement(TablePrivateBook, uid, msg)
 		return err
 	} else {
+		if len(exam) < 1 {
+			return errors.New("the exam uid is empty")
+		}
 		msg := bson.M{"exams": exam}
 		_, err := appendElement(TablePrivateBook, uid, msg)
 		return err
@@ -139,12 +143,18 @@ func AppendPrivateBookExam(uid string, exam string, style string) error {
 }
 
 func AppendPrivateBookParent(uid string, parent string) error {
+	if len(parent) < 1 {
+		return errors.New("the parent uid is empty")
+	}
 	msg := bson.M{"parents": parent}
 	_, err := appendElement(TablePrivateBook, uid, msg)
 	return err
 }
 
 func UnbindPrivateBookExam(uid string, exam string) error {
+	if len(exam) < 1 {
+		return errors.New("the exam uid is empty")
+	}
 	msg := bson.M{"exams": exam}
 	_, err := removeElement(TablePrivateBook, uid, msg)
 	return err

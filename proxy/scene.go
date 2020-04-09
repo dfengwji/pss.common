@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -104,54 +105,81 @@ func RemoveScene(uid string) bool {
 }
 
 func AppendSceneClass(uid string, class string) error {
+	if len(class) < 1 {
+		return errors.New("the class uid is empty")
+	}
 	msg := bson.M{"classes": class}
 	_, err := appendElement(TableScene, uid, msg)
 	return err
 }
 
 func UnbindSceneClass(uid string, class string) error {
+	if len(class) < 1 {
+		return errors.New("the class uid is empty")
+	}
 	msg := bson.M{"classes": class}
 	_, err := removeElement(TableScene, uid, msg)
 	return err
 }
 
 func AppendSceneStudent(uid string, student string) error {
+	if len(student) < 1 {
+		return errors.New("the student uid is empty")
+	}
 	msg := bson.M{"students": student}
 	_, err := appendElement(TableScene, uid, msg)
 	return err
 }
 
 func UnbindSceneStudent(uid string, student string) error {
+	if len(student) < 1 {
+		return errors.New("the student uid is empty")
+	}
 	msg := bson.M{"students": student}
 	_, err := removeElement(TableScene, uid, msg)
 	return err
 }
 
 func AppendSceneTeacher(uid string, teacher string) error {
+	if len(teacher) < 1 {
+		return errors.New("the teacher uid is empty")
+	}
 	msg := bson.M{"teachers": teacher}
 	_, err := appendElement(TableScene, uid, msg)
 	return err
 }
 
 func UnbindSceneTeacher(uid string, teacher string) error {
+	if len(teacher) < 1 {
+		return errors.New("the teacher uid is empty")
+	}
 	msg := bson.M{"teachers": teacher}
 	_, err := removeElement(TableScene, uid, msg)
 	return err
 }
 
 func AppendSceneBook(uid string, book string) error {
+	if len(book) < 1 {
+		return errors.New("the book uid is empty")
+	}
 	msg := bson.M{"books": book}
 	_, err := appendElement(TableScene, uid, msg)
 	return err
 }
 
 func AppendSceneAdmin(uid string, admin string) error {
+	if len(admin) < 1 {
+		return errors.New("the admin uid is empty")
+	}
 	msg := bson.M{"admins": admin}
 	_, err := appendElement(TableScene, uid, msg)
 	return err
 }
 
 func UnbindSceneAdmin(uid string, admin string) error {
+	if len(admin) < 1 {
+		return errors.New("the admin uid is empty")
+	}
 	msg := bson.M{"admins": admin}
 	_, err := removeElement(TableScene, uid, msg)
 	return err

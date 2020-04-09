@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -79,12 +80,18 @@ func UpdateThemeCourses(uid string, courses []string) error {
 }
 
 func AppendCourseInTheme(uid string, course string) error {
+	if len(course) < 1 {
+		return errors.New("the course uid is empty")
+	}
 	msg := bson.M{"courses": course}
 	_, err := appendElement(TableCourseTheme, uid, msg)
 	return err
 }
 
 func UnbindCourseInTheme(uid string, course string) error {
+	if len(course) < 1 {
+		return errors.New("the course uid is empty")
+	}
 	msg := bson.M{"courses": course}
 	_, err := removeElement(TableCourseTheme, uid, msg)
 	return err

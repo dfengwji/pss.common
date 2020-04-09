@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -108,6 +109,9 @@ func UpdateStudentPhone(uid string, phone string) error {
 }
 
 func AppendStudentBook(uid string, book string) error {
+	if len(book) < 1 {
+		return errors.New("the book uid is empty")
+	}
 	msg := bson.M{"books": book}
 	_, err := appendElement(TableStudent, uid, msg)
 	return err

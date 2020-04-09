@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 	"github.com/tidwall/gjson"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -150,6 +151,9 @@ func UpdateUserRole(uid string, role uint8, appoint string) error {
 }
 
 func AppendUserChild(uid string, child string) error {
+	if len(child) < 1 {
+		return errors.New("the child uid is empty")
+	}
 	msg := bson.M{"children": child}
 	_, err := appendElement(TableUser, uid, msg)
 	return err
