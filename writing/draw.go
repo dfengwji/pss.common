@@ -68,6 +68,24 @@ var gVx21, gVy21 float64
 var gNorm float64
 var gNX2, gNY2 float64
 
+// 渲染选项
+type RenderOptions struct {
+	PaperWidth  int     // 纸张宽度, 单位为毫米
+	PaperHeight int     // 纸张高度, 单位为毫米
+	ImageWidth  int     // 图片宽度, 单位为像素
+	ImageHeight int     // 图片高度, 单位为像素
+	PenSize     float64 // 笔迹粗细， 单位为像素
+	ClipSize    int     // 裁剪框，单位为像素，如果笔迹未超出裁剪线框，则按笔迹的包围盒开始裁剪，也就是放大了
+	PaddingSize int     // 填充尺寸，裁剪后，填充空白边框的尺寸
+}
+
+// 渲染的点
+type RenderPoint struct {
+	Dot *DotInfo // 原始点
+	X   float64  // 实际渲染坐标X
+	Y   float64  // 实际渲染坐标Y
+}
+
 func DrawPoints(points []*DotInfo, uid string) error {
 	if points == nil {
 		return errors.New("the points is nil")
@@ -128,25 +146,161 @@ func DrawPointSamples(points []*PointSample) {
 	}
 }
 
-func SavePNG(points []*DotInfo, _filepath string) error {
-	length := len(points)
+func SavePNG(_dots []*DotInfo, _options RenderOptions, _filepath string) error {
+	length := len(_dots)
 	if length < 1 {
 		return errors.New("none points")
 	}
 
-	if canvas == nil {
-		canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
-		canvas.SetLineCapRound()
+	// 将纸张转换为等比适配图片大小的尺寸时,使用FitCenter模式,保留完整纸张，不切割和局部展示
+	// 以纸张的比例和画布的宽度计算画布的等比高度
+	canvasWidth := int(float64(_options.ImageHeight) * float64(_options.PaperWidth) / float64(_options.PaperHeight))
+	// 以纸张的比例和画布的高度计算画布的等比宽度
+	canvasHeight := int(float64(_options.ImageWidth) * float64(_options.PaperHeight) / float64(_options.PaperWidth))
+	// 适配后，X轴或Y轴会存在空白，设定X轴和Y轴的偏移量，将纸张移动图片中央
+	offsetX := float64(0)
+	offsetY := float64(0)
+
+	// 图片宽度比大于纸张宽度比
+	// ....._____________.....
+	// .    |           |    .
+	// .    |           |    .
+	// .    |           |    .
+	// .    |           |    .
+	// .    |  Paper    |    .  Image
+	// .    |           |    .
+	// .    |           |    .
+	// .    |           |    .
+	// ....._____________.....
+
+	//fmt.Println(fmt.Sprintf("canvas : {width:%v, height:%v}", canvasWidth, canvasHeight))
+	if (float64(_options.PaperHeight)/float64(_options.PaperWidth))-(float64(_options.ImageHeight)/float64(_options.ImageWidth)) > 0 {
+		// 画布高度为图片高度
+		canvasHeight = _options.ImageHeight
+		// 计算X轴偏移量
+		offsetX = float64(_options.ImageWidth-canvasWidth) / 2
 	}
 
-	canvas.SetRGB(1, 1, 1)
-	canvas.Clear()
-	imageNum += length
+	// 图片宽度比大于纸张宽度比
+	// .................
+	// .               .
+	// .               .
+	// _________________
+	// |               |
+	// |               |
+	// |               |
+	// |               |
+	// |     Paper     |
+	// |               |
+	// |               |
+	// |               |
+	// _________________
+	// .               .
+	// .     Image     .
+	// .................
+
+	if (float64(_options.ImageHeight)/float64(_options.ImageWidth))-(float64(_options.PaperHeight)/float64(_options.PaperWidth)) > 0 {
+		// 画布宽度为图片宽度
+		canvasWidth = _options.ImageWidth
+		// 计算X轴偏移量
+		offsetY = float64(_options.ImageHeight-canvasHeight) / 2
+	}
+
+	//fmt.Println(fmt.Sprintf("fit canvas : {width:%v, height:%v}", canvasWidth, canvasHeight))
+
+	// 点的坐标系的左上角为原点，右下角为无限大
+	// 画布上的点的包围框，左上角为(minX,minY)，右下角为(maxX, maxY)
+	// !!! 初始化时，将小值设置为最大，大值设置为最小, 不是BUG，不要改我
+	minX := float64(9223372036854775807)
+	maxX := float64(0)
+	minY := float64(9223372036854775807)
+	maxY := float64(0)
+
+	points := make([]*RenderPoint, len(_dots))
 	for i := 0; i < length; i++ {
-		drawGraph(points[i])
+		points[i] = &RenderPoint{
+			Dot: _dots[i],
+		}
+		dot := _dots[i]
+		if dot == nil {
+			continue
+		}
+		//fmt.Println(dot)
+
+		// FX代表小数部分，X代表整数部分
+		// 计算出点的浮点型的坐标
+		dotX := float64(dot.FX)/100.0 + float64(dot.X)
+		dotY := float64(dot.FY)/100.0 + float64(dot.Y)
+
+		//fmt.Println(fmt.Sprintf("dotX: %v, dotY: %v", dotX, dotY))
+
+		// codepint 表示笔触在纸上的点的大小
+		// 将纸张大小按笔触单位为1进行标准化
+		paperNormalizeWidth := float64(_options.PaperWidth) / codepointX
+		paperNormalizeHeight := float64(_options.PaperHeight) / codepointY
+
+		// 计算像素和物理单位的比例
+		scaleX := float64(canvasWidth) / paperNormalizeWidth
+		scaleY := float64(canvasWidth) / paperNormalizeHeight
+
+		// 将笔的物理单位转化为像素
+		x := dotX * scaleX
+		y := dotY * scaleY
+
+		// 添加偏移量，使其居中
+		x = x + offsetX
+		y = y + offsetY
+
+		points[i].X = x
+		points[i].Y = y
+
+		// 矫正包围框
+		if x > maxX {
+			maxX = x
+		}
+		if x < minX {
+			minX = x
+		}
+		if y > maxY {
+			maxY = y
+		}
+		if y < minY {
+			minY = y
+		}
 	}
 
-	return canvas.SavePNG(_filepath)
+	// 判断点的包围框是否未超出裁剪框
+	if int(minX) > _options.ClipSize && int(maxY) < _options.ClipSize && int(minX) > _options.ClipSize && int(maxY) < _options.ClipSize {
+		// 裁剪
+		// 点的包围盒的高度和宽度
+		//boundWidth := maxX - minX
+		//boundHeight := maxY - minY
+	}
+
+	// 新建画布
+	newCanvas := gg.NewContext(_options.ImageWidth, _options.ImageHeight)
+	newCanvas.SetLineCapRound()
+	// 设置白色
+	newCanvas.SetRGB(1, 1, 1)
+	// 使用设置的颜色清空画布
+	newCanvas.Clear()
+	// 渲染点
+	for i := 0; i < len(points); i++ {
+		point := points[i]
+		if point.Dot == nil {
+			continue
+		}
+		color := getColor(point.Dot.Color)
+		penSize := float64(point.Dot.Scale) * _options.PenSize
+		if point.Dot.Action == DotActionDown {
+			touchDown(newCanvas, point.X, point.Y, color, penSize, 1.0, point.Dot.Force)
+		} else if point.Dot.Action == DotActionMove {
+			touchMove(newCanvas, point.X, point.Y, color, penSize, 1.0, point.Dot.Force)
+		} else if point.Dot.Action == DotActionUp {
+			touchUp(newCanvas, point.X, point.Y, color, penSize)
+		}
+	}
+	return newCanvas.SavePNG(_filepath)
 }
 
 func drawGraph(point *DotInfo) bool {
@@ -170,11 +324,11 @@ func drawGraph(point *DotInfo) bool {
 	//y := roundNum(py, 13)
 	gWidth = float64(point.Scale) * 2.0
 	if point.Action == DotActionDown {
-		touchDown(x, y, color, 1.0, point.Force)
+		touchDown(canvas, x, y, color, gWidth, 1.0, point.Force)
 	} else if point.Action == DotActionMove {
-		touchMove(x, y, color, 1.0, point.Force)
+		touchMove(canvas, x, y, color, gWidth, 1.0, point.Force)
 	} else if point.Action == DotActionUp {
-		touchUp(x, y, color)
+		touchUp(canvas, x, y, color, gWidth)
 		return true
 	}
 	return false
@@ -198,11 +352,11 @@ func drawGraph2(point *PointSample) {
 	//y := roundNum(py, 13)
 
 	if point.Action == DotActionDown {
-		touchDown(x, y, point.Color, point.Scale, point.Force)
+		touchDown(canvas, x, y, point.Color, gWidth, point.Scale, point.Force)
 	} else if point.Action == DotActionMove {
-		touchMove(x, y, point.Color, point.Scale, point.Force)
+		touchMove(canvas, x, y, point.Color, gWidth, point.Scale, point.Force)
 	} else if point.Action == DotActionUp {
-		touchUp(x, y, point.Color)
+		touchUp(canvas, x, y, point.Color, gWidth)
 	}
 }
 
@@ -226,43 +380,43 @@ func getColor(color uint32) color.Color {
 	}
 }
 
-func touchDown(x float64, y float64, color color.Color, scale uint8, force uint16) {
+func touchDown(_canvas *gg.Context, x float64, y float64, color color.Color, _penSize float64, scale uint8, force uint16) {
 	pointIndex = 0
 
-	canvas.SetColor(color)
-	drawPen(float64(scale), 0.0, 0.0, gWidth, x, y, force, DotActionDown)
+	_canvas.SetColor(color)
+	drawPen(_canvas, float64(scale), 0.0, 0.0, _penSize, x, y, force, DotActionDown)
 	//canvas.DrawPoint(x, y, 1)
-	canvas.Stroke()
+	_canvas.Stroke()
 	lastPoint.X = x
 	lastPoint.Y = y
 }
 
-func touchMove(x float64, y float64, color color.Color, scale uint8, force uint16) {
+func touchMove(_canvas *gg.Context, x float64, y float64, color color.Color, _penSize float64, scale uint8, force uint16) {
 	pointIndex += 1
 	//fmt.Println()
 	//fmt.Printf("x = %f; y = %f", x, y)
-	canvas.SetColor(color)
-	drawPen(float64(scale), 0.0, 0.0, gWidth, x, y, force, DotActionMove)
+	_canvas.SetColor(color)
+	drawPen(_canvas, float64(scale), 0.0, 0.0, _penSize, x, y, force, DotActionMove)
 	//canvas.SetLineWidth(lineWidth)
 	//canvas.DrawLine(lastPoint.X, lastPoint.Y, x, y)
-	canvas.Stroke()
+	_canvas.Stroke()
 	lastPoint.X = x
 	lastPoint.Y = y
 }
 
-func touchUp(x float64, y float64, color color.Color) {
+func touchUp(_canvas *gg.Context, x float64, y float64, color color.Color, _penSize float64) {
 	pointIndex += 1
-	canvas.SetColor(color)
+	_canvas.SetColor(color)
 	//canvas.SetLineWidth(lineWidth)
 	//canvas.DrawLine(lastPoint.X, lastPoint.Y, x, y)
-	drawPen(1.0, 0.0, 0.0, gWidth, x, y, 0, DotActionUp)
-	canvas.Stroke()
+	drawPen(_canvas, 1.0, 0.0, 0.0, _penSize, x, y, 0, DotActionUp)
+	_canvas.Stroke()
 	lastPoint.X = x
 	lastPoint.Y = y
 	pointIndex = -1
 }
 
-func drawPen(scale float64, offsetX float64, offsetY float64, penWidth float64, x float64, y float64, force uint16, ntype uint8) {
+func drawPen(_canvas *gg.Context, scale float64, offsetX float64, offsetY float64, penWidth float64, x float64, y float64, force uint16, ntype uint8) {
 	//DV.paint.setStrokeCap(Paint.Cap.ROUND)
 	//DV.paint.setStyle(Paint.Style.FILL)
 	ws := 1.0
@@ -272,7 +426,7 @@ func drawPen(scale float64, offsetX float64, offsetY float64, penWidth float64, 
 		gY0 = y*scale + offsetY
 		//g_p0 = Math.max(1, penWidth * 3 * force / 1023) * scale;
 		gP0 = getPenWidth(penWidth, force) * ws
-		canvas.DrawPoint(gX0, gY0, 0.5)
+		_canvas.DrawPoint(gX0, gY0, 0.5)
 		return
 	}
 
@@ -312,19 +466,19 @@ func drawPen(scale float64, offsetX float64, offsetY float64, penWidth float64, 
 		gNX2 = -gVy21
 		gNY2 = gVx21
 
-		canvas.MoveTo(gX0+gNX0, gY0+gNY0)
+		_canvas.MoveTo(gX0+gNX0, gY0+gNY0)
 		// The + boundary of the stroke
-		canvas.CubicTo(gX1+gNX0, gY1+gNY0, gX1+gNX2, gY1+gNY2, gX2+gNX2, gY2+gNY2)
+		_canvas.CubicTo(gX1+gNX0, gY1+gNY0, gX1+gNX2, gY1+gNY2, gX2+gNX2, gY2+gNY2)
 		// round out the cap
-		canvas.CubicTo(gX2+gNX2-gVx21, gY2+gNY2-gVy21, gX2-gNX2-gVx21, gY2-gNY2-gVy21, gX2-gNX2, gY2-gNY2)
+		_canvas.CubicTo(gX2+gNX2-gVx21, gY2+gNY2-gVy21, gX2-gNX2-gVx21, gY2-gNY2-gVy21, gX2-gNX2, gY2-gNY2)
 		// THe - boundary of the stroke
-		canvas.CubicTo(gX1-gNX2, gY1-gNY2, gX1-gNX0, gY1-gNY0, gX0-gNX0, gY0-gNY0)
+		_canvas.CubicTo(gX1-gNX2, gY1-gNY2, gX1-gNX0, gY1-gNY0, gX0-gNX0, gY0-gNY0)
 		// round out the other cap
-		canvas.CubicTo(gX0-gNX0-gVx01, gY0-gNY0-gVy01, gX0+gNX0-gVx01, gY0+gNY0-gVy01, gX0+gNX0, gY0+gNY0)
+		_canvas.CubicTo(gX0-gNX0-gVx01, gY0-gNY0-gVy01, gX0+gNX0-gVx01, gY0+gNY0-gVy01, gX0+gNX0, gY0+gNY0)
 
 		if ntype == 2 {
-			canvas.SetLineWidth(gP3)
-			canvas.DrawLine(gX1, gY1, gX3, gY3)
+			_canvas.SetLineWidth(gP3)
+			_canvas.DrawLine(gX1, gY1, gX3, gY3)
 		}
 		gX0 = gX2
 		gY0 = gY2
@@ -351,11 +505,11 @@ func drawPen(scale float64, offsetX float64, offsetY float64, penWidth float64, 
 		gNX2 = -gVy21
 		gNY2 = gVx21
 
-		canvas.MoveTo(gX0+gNX0, gY0+gNY0)
-		canvas.CubicTo(gX1+gNX0, gY1+gNY0, gX1+gNX2, gY1+gNY2, gX2+gNX2, gY2+gNY2)
-		canvas.CubicTo(gX2+gNX2-gVx21, gY2+gNY2-gVy21, gX2-gNX2-gVx21, gY2-gNY2-gVy21, gX2-gNX2, gY2-gNY2)
-		canvas.CubicTo(gX1-gNX2, gY1-gNY2, gX1-gNX0, gY1-gNY0, gX0-gNX0, gY0-gNY0)
-		canvas.CubicTo(gX0-gNX0-gVx01, gY0-gNY0-gVy01, gX0+gNX0-gVx01, gY0+gNY0-gVy01, gX0+gNX0, gY0+gNY0)
+		_canvas.MoveTo(gX0+gNX0, gY0+gNY0)
+		_canvas.CubicTo(gX1+gNX0, gY1+gNY0, gX1+gNX2, gY1+gNY2, gX2+gNX2, gY2+gNY2)
+		_canvas.CubicTo(gX2+gNX2-gVx21, gY2+gNY2-gVy21, gX2-gNX2-gVx21, gY2-gNY2-gVy21, gX2-gNX2, gY2-gNY2)
+		_canvas.CubicTo(gX1-gNX2, gY1-gNY2, gX1-gNX0, gY1-gNY0, gX0-gNX0, gY0-gNY0)
+		_canvas.CubicTo(gX0-gNX0-gVx01, gY0-gNY0-gVy01, gX0+gNX0-gVx01, gY0+gNY0-gVy01, gX0+gNX0, gY0+gNY0)
 		return
 	}
 }
