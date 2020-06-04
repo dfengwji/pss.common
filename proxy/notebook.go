@@ -15,9 +15,9 @@ type NoteBook struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
+	Author uint64 `json:"author" bson:"author"`
 	Style  string `json:"style" bson:"style"`
 	Remark string `json:"remark" bson:"remark"`
-	Author string `json:"author" bson:"author"`
 }
 
 func CreateNoteBook(info *NoteBook) error {
@@ -87,7 +87,7 @@ func GetAllNoteBooks() ([]*NoteBook, error) {
 	return items, nil
 }
 
-func GetNoteBooksByAuthor(author string) ([]*NoteBook, error) {
+func GetNoteBooksByAuthor(author uint64) ([]*NoteBook, error) {
 	cursor, err1 := findMany(TableNoteBook, bson.M{"author": author}, 0)
 	if err1 != nil {
 		return nil, err1
