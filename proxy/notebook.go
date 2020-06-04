@@ -15,11 +15,9 @@ type NoteBook struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
-	Type   uint8  `json:"type" bson:"type"`
-	Page   uint16 `json:"page" bson:"page"`
-	Author uint64 `json:"author" bson:"author"`
-	Cover  string `json:"cover" bson:"cover"`
+	Style  string `json:"style" bson:"style"`
 	Remark string `json:"remark" bson:"remark"`
+	Author string `json:"author" bson:"author"`
 }
 
 func CreateNoteBook(info *NoteBook) error {
@@ -72,12 +70,12 @@ func RemoveNoteBook(uid string) error {
 	return err
 }
 
-func GetNoteBooks() ([]*NoteBook, error) {
+func GetAllNoteBooks() ([]*NoteBook, error) {
 	cursor, err1 := findAll(TableNoteBook, 0)
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*NoteBook, 0, 200)
+	var items = make([]*NoteBook, 0, 20)
 	for cursor.Next(context.Background()) {
 		var node = new(NoteBook)
 		if err := cursor.Decode(node); err != nil {
@@ -89,7 +87,7 @@ func GetNoteBooks() ([]*NoteBook, error) {
 	return items, nil
 }
 
-func GetNoteBooksByAuthor(author uint64) ([]*NoteBook, error) {
+func GetNoteBooksByAuthor(author string) ([]*NoteBook, error) {
 	cursor, err1 := findMany(TableNoteBook, bson.M{"author": author}, 0)
 	if err1 != nil {
 		return nil, err1
@@ -106,13 +104,13 @@ func GetNoteBooksByAuthor(author uint64) ([]*NoteBook, error) {
 	return items, nil
 }
 
-func UpdateNoteBookCover(uid string, cover string) error {
-	msg := bson.M{"cover": cover, "updatedAt": time.Now()}
+func UpdateNoteBookStyle(uid string, style string) error {
+	msg := bson.M{"style": style, "updatedAt": time.Now()}
 	_, err := updateOne(TableNoteBook, uid, msg)
 	return err
 }
 
-func UpdateNoteBookBase(uid string, name string, remark string) error {
+func UpdateNoteBookBase(uid, name, remark string) error {
 	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
 	_, err := updateOne(TableNoteBook, uid, msg)
 	return err

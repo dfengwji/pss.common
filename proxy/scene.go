@@ -18,6 +18,7 @@ type Scene struct {
 	Status   uint8    `json:"status" bson:"status"`
 	Type     uint8    `json:"type" bson:"type"`
 	Name     string   `json:"name" bson:"name"`
+	Place    string `json:"place" bson:"place"`
 	Address  string   `json:"address" bson:"address"`
 	Mater    string   `json:"mater" bson:"master"`
 	Phone    string   `json:"phone" bson:"phone"`
@@ -92,6 +93,12 @@ func UpdateSceneIcon(uid string, icon string) error {
 
 func UpdateSceneStatus(uid string, status uint8) error {
 	msg := bson.M{"status": status, "updatedAt": time.Now()}
+	_, err := updateOne(TableScene, uid, msg)
+	return err
+}
+
+func UpdateScenePlace(uid string, place string) error {
+	msg := bson.M{"place": place, "updatedAt": time.Now()}
 	_, err := updateOne(TableScene, uid, msg)
 	return err
 }
