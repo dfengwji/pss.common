@@ -24,7 +24,7 @@ type Scene struct {
 	Phone    string   `json:"phone" bson:"phone"`
 	Desc     string   `json:"desc" bson:"desc"`
 	Icon     string   `json:"icon" bson:"icon"`
-	Teachers []string `json:"teachers" bson:"teachers"`
+	Members []string `json:"members" bson:"members"`
 	Students []string `json:"students" bson:"students"`
 	Books    []string `json:"books" bson:"books"`
 }
@@ -147,20 +147,20 @@ func UnbindSceneStudent(uid string, student string) error {
 	return err
 }
 
-func AppendSceneTeacher(uid string, teacher string) error {
-	if len(teacher) < 1 {
+func AppendSceneMember(uid string, member string) error {
+	if len(member) < 1 {
 		return errors.New("the teacher uid is empty")
 	}
-	msg := bson.M{"teachers": teacher}
+	msg := bson.M{"members": member}
 	_, err := appendElement(TableScene, uid, msg)
 	return err
 }
 
-func UnbindSceneTeacher(uid string, teacher string) error {
-	if len(teacher) < 1 {
+func UnbindSceneMember(uid string, member string) error {
+	if len(member) < 1 {
 		return errors.New("the teacher uid is empty")
 	}
-	msg := bson.M{"teachers": teacher}
+	msg := bson.M{"members": member}
 	_, err := removeElement(TableScene, uid, msg)
 	return err
 }

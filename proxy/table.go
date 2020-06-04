@@ -108,8 +108,6 @@ const (
 
 	TableStudent = "students"
 
-	TableTeacher = "teachers"
-
 	/*
 		学生申请加入机构
 	*/

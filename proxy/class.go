@@ -32,7 +32,7 @@ type EduClass struct {
 
 	Scene     string   `json:"scene" bson:"scene"`
 	Master    string   `json:"master" bson:"master"`
-	Teachers  []string `json:"teachers" bson:"teachers"`
+	Members  []string `json:"members" bson:"members"`
 	Students  []string `json:"students" bson:"students"`
 	Workbooks []string `json:"workbooks" bson:"workbooks"`
 }
@@ -100,8 +100,8 @@ func UpdateClassMaster(uid string, teacher string) error {
 	return err
 }
 
-func UpdateClassTeachers(uid string, teachers []string) error {
-	msg := bson.M{"teachers": teachers, "updatedAt": time.Now()}
+func UpdateClassMembers(uid string, members []string) error {
+	msg := bson.M{"members": members, "updatedAt": time.Now()}
 	_, err := updateOne(TableClasses, uid, msg)
 	return err
 }
@@ -129,20 +129,20 @@ func AppendClassStudent(uid string, student string) error {
 	return err
 }
 
-func AppendClassTeacher(uid string, teacher string) error {
-	if len(teacher) < 1 {
-		return errors.New("the teacher uid is empty")
+func AppendClassMember(uid string, member string) error {
+	if len(member) < 1 {
+		return errors.New("the member uid is empty")
 	}
-	msg := bson.M{"teachers": teacher}
+	msg := bson.M{"members": member}
 	_, err := appendElement(TableClasses, uid, msg)
 	return err
 }
 
-func UnbindClassTeacher(uid string, teacher string) error {
-	if len(teacher) < 1 {
-		return errors.New("the teacher uid is empty")
+func UnbindClassMember(uid string, member string) error {
+	if len(member) < 1 {
+		return errors.New("the member uid is empty")
 	}
-	msg := bson.M{"teachers": teacher}
+	msg := bson.M{"members": member}
 	_, err := removeElement(TableClasses, uid, msg)
 	return err
 }

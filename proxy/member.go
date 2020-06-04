@@ -1,6 +1,5 @@
 package proxy
 
-
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
