@@ -16,10 +16,10 @@ type Apply struct {
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
 	Applicant  string    `json:"applicant" bson:"applicant"`
-	Student    string    `json:"student" bson:"student"`
+	Appoint    string    `json:"appoint" bson:"appoint"`
 	Status     uint8     `json:"status" bson:"status"`
 	Scene      string    `json:"scene" bson:"scene"`
-	Class      string    `json:"class" bson:"class"`
+	Group      string    `json:"group" bson:"group"`
 	SubmitTime time.Time `json:"submit" bson:"submit"`
 }
 
@@ -49,8 +49,8 @@ func GetApply(uid string) (*Apply, error) {
 	return model, nil
 }
 
-func GetAppliesByClass(class string) ([]*Apply, error) {
-	msg := bson.M{"class": class, "deleteAt": new(time.Time)}
+func GetAppliesByGroup(group string) ([]*Apply, error) {
+	msg := bson.M{"group": group, "deleteAt": new(time.Time)}
 	cursor, err1 := findMany(TableApply, msg, 0)
 	if err1 != nil {
 		return nil, err1

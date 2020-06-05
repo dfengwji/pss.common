@@ -105,7 +105,7 @@ const (
 	TableScene = "scenes"
 	TableDepartment = "departments"
 	TableClasses = "classes"
-
+    TableTeam	= "teams"
 	TableStudent = "students"
 
 	/*
