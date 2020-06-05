@@ -14,11 +14,12 @@ type NotebookStyle struct {
 	CreatedTime time.Time          `json:"createdAt" bson:"createdAt"`
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
+
+	Type        uint8              `json:"type" bson:"type"`
+	Page        uint16             `json:"page" bson:"page"`
 	Cover       string             `json:"cover" bson:"cover"`
 	Background  string             `json:"background" bson:"background"`
 	OriginBook  string             `json:"origin" bson:"origin"`
-	Type        uint8              `json:"type" bson:"type"`
-	Page        uint16             `json:"page" bson:"page"`
 }
 
 func CreateNotebookStyle(info *NotebookStyle) error {
@@ -39,7 +40,7 @@ func GetAllNotebookStyles() ([]*NotebookStyle, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*NotebookStyle, 0, 10000)
+	var items = make([]*NotebookStyle, 0, 10)
 	for cursor.Next(context.Background()) {
 		var node = new(NotebookStyle)
 		if err := cursor.Decode(node); err != nil {

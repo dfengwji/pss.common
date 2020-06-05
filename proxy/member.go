@@ -24,6 +24,8 @@ type Member struct {
 	Specialty  string `json:"specialty" bson:"specialty"`
 	Desc       string `json:"desc" bson:"desc"`
 	Experience string `json:"experience" bson:"experience"`
+	Scene      string `json:"scene" bson:"scene"`
+	Department string `json:"department" bson:"department"`
 }
 
 func CreateMember(info *Member) error {
@@ -116,6 +118,12 @@ func UpdateMemberPhoto(uid string, cover string) error {
 
 func UpdateMemberPhone(uid string, cover string) error {
 	msg := bson.M{"photo": cover, "updatedAt": time.Now()}
+	_, err := updateOne(TableMember, uid, msg)
+	return err
+}
+
+func UpdateMemberDepartment(uid string, scene, department string) error {
+	msg := bson.M{"scene": scene, "department": department, "updatedAt": time.Now()}
 	_, err := updateOne(TableMember, uid, msg)
 	return err
 }

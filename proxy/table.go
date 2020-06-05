@@ -103,7 +103,7 @@ const (
 	TablePages = "pages"
 
 	TableScene = "scenes"
-
+	TableDepartment = "departments"
 	TableClasses = "classes"
 
 	TableStudent = "students"

@@ -16,7 +16,7 @@ type Writing struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 	Pen         uint64             `json:"pen" bson:"pen"`
-	User        uint64             `json:"user" bson:"user"`
+	Writer        uint64             `json:"writer" bson:"writer"`
 	Book        string             `json:"book" bson:"book"`
 	Exercise    string             `json:"exercise" bson:"exercise"`
 	Style       string             `json:"style" bson:"style"`
@@ -52,8 +52,8 @@ func GetWriting(uid string) (*Writing, error) {
 	return model, err
 }
 
-func GetWritingsByUser(user uint64, book string) ([]*Writing, error) {
-	filter := bson.M{"user": user, "book": book, "deleteAt": new(time.Time)}
+func GetWritingsByWriter(writer uint64, book string) ([]*Writing, error) {
+	filter := bson.M{"writer": writer, "book": book, "deleteAt": new(time.Time)}
 	cursor, err := findManyByOpts(TableWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
 	if err != nil {
 		return nil, err
@@ -70,8 +70,8 @@ func GetWritingsByUser(user uint64, book string) ([]*Writing, error) {
 	return items, nil
 }
 
-func GetWritingByExercise(user uint64, book string, exercise string) (*Writing, error) {
-	msg := bson.M{"user": user, "book": book, "exercise": exercise}
+func GetWritingByExercise(writer uint64, book string, exercise string) (*Writing, error) {
+	msg := bson.M{"writer": writer, "book": book, "exercise": exercise}
 	result, err := findOneBy(TableWriting, msg)
 	if err != nil {
 		return nil, err
@@ -84,8 +84,8 @@ func GetWritingByExercise(user uint64, book string, exercise string) (*Writing, 
 	return model, nil
 }
 
-func GetWritingByStyle(user uint64, style string) (*Writing, error) {
-	msg := bson.M{"user": user, "style": style}
+func GetWritingByStyle(writer uint64, style string) (*Writing, error) {
+	msg := bson.M{"writer": writer, "style": style}
 	result, err := findOneBy(TableWriting, msg)
 	if err != nil {
 		return nil, err

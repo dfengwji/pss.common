@@ -15,9 +15,10 @@ type NoteBook struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
-	Author uint64 `json:"author" bson:"author"`
-	Style  string `json:"style" bson:"style"`
-	Remark string `json:"remark" bson:"remark"`
+	Used uint8 			`json:"used" bson:"used"`
+	Owner string 		`json:"owner" bson:"owner"`
+	Style  string 		`json:"style" bson:"style"`
+	Remark string 		`json:"remark" bson:"remark"`
 }
 
 func CreateNoteBook(info *NoteBook) error {
@@ -87,8 +88,8 @@ func GetAllNoteBooks() ([]*NoteBook, error) {
 	return items, nil
 }
 
-func GetNoteBooksByAuthor(author uint64) ([]*NoteBook, error) {
-	cursor, err1 := findMany(TableNoteBook, bson.M{"author": author}, 0)
+func GetNoteBooksByOwner(owner uint64) ([]*NoteBook, error) {
+	cursor, err1 := findMany(TableNoteBook, bson.M{"owner": owner}, 0)
 	if err1 != nil {
 		return nil, err1
 	}
@@ -104,6 +105,12 @@ func GetNoteBooksByAuthor(author uint64) ([]*NoteBook, error) {
 	return items, nil
 }
 
+func UpdateNoteBookUsed(uid string, used uint8) error {
+	msg := bson.M{"used": used, "updatedAt": time.Now()}
+	_, err := updateOne(TableNoteBook, uid, msg)
+	return err
+}
+
 func UpdateNoteBookStyle(uid string, style string) error {
 	msg := bson.M{"style": style, "updatedAt": time.Now()}
 	_, err := updateOne(TableNoteBook, uid, msg)
@@ -112,6 +119,12 @@ func UpdateNoteBookStyle(uid string, style string) error {
 
 func UpdateNoteBookBase(uid, name, remark string) error {
 	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
+	_, err := updateOne(TableNoteBook, uid, msg)
+	return err
+}
+
+func UpdateNoteBookOwner(uid string, owner string) error {
+	msg := bson.M{"owner": owner, "updatedAt": time.Now()}
 	_, err := updateOne(TableNoteBook, uid, msg)
 	return err
 }

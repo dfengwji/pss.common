@@ -21,7 +21,7 @@ type Fragment struct {
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 	Status      uint8              `json:"status" bson:"status"`
 	Pen         uint64             `json:"pen" bson:"pen"`
-	User        uint64             `json:"user" bson:"user"`
+	Writer        uint64             `json:"writer" bson:"writer"`
 	Color       string             `json:"color" bson:"color"`
 	ExamStyle   string             `json:"style" bson:"style"`
 	Stamp       uint64             `json:"stamp" bson:"stamp"`

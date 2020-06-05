@@ -16,7 +16,7 @@ type NoteWriting struct {
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
 	Pen      uint64 `json:"pen" bson:"pen"`
-	User     uint64 `json:"user" bson:"user"`
+	Writer     uint64 `json:"writer" bson:"writer"`
 	Book     string `json:"book" bson:"book"`
 	Page     uint16 `json:"page" bson:"page"`
 	DotBook  uint64 `json:"dotBook" bson:"dotBook"`
@@ -54,8 +54,8 @@ func GetNoteWriting(uid string) (*NoteWriting, error) {
 	return model, nil
 }
 
-func GetNoteWritingByPage(user uint64, book string, page uint16) (*NoteWriting, error) {
-	filter := bson.M{"user": user, "book": book, "page": page, "deleteAt": new(time.Time)}
+func GetNoteWritingByPage(writer uint64, book string, page uint16) (*NoteWriting, error) {
+	filter := bson.M{"writer": writer, "book": book, "page": page, "deleteAt": new(time.Time)}
 	result, err := findOneByOpt(TableNoteWriting, filter, bson.M{"dots": 0})
 	if err != nil {
 		return nil, err
@@ -68,8 +68,8 @@ func GetNoteWritingByPage(user uint64, book string, page uint16) (*NoteWriting, 
 	return model, nil
 }
 
-func GetNoteWritingsByUser(user uint64, book string) ([]*NoteWriting, error) {
-	filter := bson.M{"user": user, "book": book, "deleteAt": new(time.Time)}
+func GetNoteWritingsByWriter(writer uint64, book string) ([]*NoteWriting, error) {
+	filter := bson.M{"writer": writer, "book": book, "deleteAt": new(time.Time)}
 	cursor, err := findManyByOpts(TableNoteWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
 	if err != nil {
 		return nil, err
