@@ -25,10 +25,11 @@ type HeaderInfo struct {
 	//用户ID
 	UID string `json:"-"`
 	//笔的ID, 笔盒里面预留字段
-	SSRC   string `json:"-"`
-	Type   string `json:"-"`
-	userID uint64 `json:"-"`
-	penID  uint64 `json:"-"`
+	SSRC     string `json:"-"`
+	Type     string `json:"-"`
+	writerID uint64 `json:"-"`
+	penID    uint64 `json:"-"`
+	senderID   uint64 `json:"-"`
 }
 
 func (mine *HeaderInfo) GetHex() string {
@@ -47,12 +48,17 @@ func (mine *HeaderInfo) ParseHex(hex string) {
 	mine.UID = hex[8:16]
 	mine.SSRC = hex[16:24]
 	mine.Type = hex[24:28]
-	mine.userID, _ = strconv.ParseUint(mine.UID, 16, 64)
+	mine.senderID, _ = strconv.ParseUint(mine.Seq, 16, 64)
+	mine.writerID, _ = strconv.ParseUint(mine.UID, 16, 64)
 	mine.penID, _ = strconv.ParseUint(mine.SSRC, 16, 64)
 }
 
-func (mine *HeaderInfo) User() uint64 {
-	return mine.userID
+func (mine *HeaderInfo) Sender() uint64 {
+	return mine.writerID
+}
+
+func (mine *HeaderInfo) Writer() uint64 {
+	return mine.writerID
 }
 
 func (mine *HeaderInfo) Pen() uint64 {

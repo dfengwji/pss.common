@@ -21,12 +21,20 @@ type FragmentInfo struct {
 	 * 存放解析好了的命令
 	 */
 	CommandData string
-	Book        uint64
-	Section     string
-	Owner       string
-	Page        uint16
-	Stamp       uint64
-	Mac         string
+
+	/*
+	书的实例ID
+	 */
+	BookInstance uint64
+	/*
+	铺码书本的ID
+	 */
+	BookTemplate uint64
+	Section      string
+	Owner        string
+	Page         uint16
+	Stamp        uint64
+	Mac          string
 	/**
 	 * 笔迹点的个数,每个点是13(B)
 	 */
@@ -105,16 +113,17 @@ func (mine *FragmentInfo) ParseHex(msgType string, hex string) error {
 			return errors.New("the message format length is must more than 38")
 		}
 		mine.hex = hex
-		mine.Counter,_ = formatString(hex[0:8])
-		mine.Color = hex[8:12]
-		mine.kind = hex[12:14]
+		mine.BookInstance, _ = hexToUnit(hex[0:8])
+		mine.Counter,_ = formatString(hex[8:16])
+		mine.Color = hex[16:18]
+		mine.kind = hex[18:22]
 		if mine.kind == KindChirography {
-			mine.Book,_ = hexToUnit(hex[14:18])
-			mine.Section,_ = formatString(hex[18:22])
-			mine.Owner,_ = formatString(hex[22:26])
-			mine.Page,_ = hexToUnit16(hex[26:28])
-			mine.Stamp,_ = hexToUnit(hex[28:36])
-			num, _ := strconv.ParseInt(hex[36:38], 16, 32)
+			mine.BookTemplate,_ = hexToUnit(hex[22:26])
+			mine.Section,_ = formatString(hex[26:30])
+			mine.Owner,_ = formatString(hex[30:34])
+			mine.Page,_ = hexToUnit16(hex[34:36])
+			mine.Stamp,_ = hexToUnit(hex[36:44])
+			num, _ := strconv.ParseInt(hex[44:46], 16, 32)
 			mine.PointNum = int(num)
 			mine.Points = make([]*DotInfo, 0, mine.PointNum)
 			sub := hex[38:]

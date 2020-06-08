@@ -85,6 +85,20 @@ func GetMemberByPhone(phone string) (*Member, error) {
 	return model, nil
 }
 
+func GetMemberByID(id uint64) (*Member, error) {
+	msg := bson.M{"id": id}
+	result, err := findOneBy(TableMember, msg)
+	if err != nil {
+		return nil, err
+	}
+	model := new(Member)
+	err1 := result.Decode(model)
+	if err1 != nil {
+		return nil, err1
+	}
+	return model, nil
+}
+
 func RemoveMember(uid string) error {
 	_, err := removeOne(TableMember, uid)
 	return err

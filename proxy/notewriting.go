@@ -24,6 +24,7 @@ type NoteWriting struct {
 	DotStamp uint64 `json:"dotStamp" bson:"dotStamp"`
 	DotNum   uint16 `json:"dotNum" bson:"dotNum"`
 	Duration uint16 `json:"duration" bson:"duration"`
+	Snapshot string `json:"snapshot" bson:"snapshot"`
 	Color    string `json:"color" bson:"color"`
 	Dots     string `json:"dots" bson:"dots"`
 }
@@ -105,6 +106,12 @@ func GetAllNoteWritings() ([]*NoteWriting, error) {
 
 func RemoveNoteWriting(uid string) error {
 	_, err := removeOne(TableNoteWriting, uid)
+	return err
+}
+
+func UpdateNoteWritingSnapshot(uid string, snapshot string) error {
+	msg := bson.M{"snapshot": snapshot, "updatedAt": time.Now()}
+	_, err := updateOne(TableNoteWriting, uid, msg)
 	return err
 }
 

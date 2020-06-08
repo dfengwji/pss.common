@@ -15,6 +15,7 @@ type NoteBook struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
+	Type uint8 			`json:"type" bson:"type"`
 	Used uint8 			`json:"used" bson:"used"`
 	Owner string 		`json:"owner" bson:"owner"`
 	Style  string 		`json:"style" bson:"style"`
