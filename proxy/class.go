@@ -112,12 +112,9 @@ func UpdateClassBook(uid string, book string) error {
 	return err
 }
 
-func RemoveClass(uid string) bool {
+func RemoveClass(uid string) error {
 	_, err := removeOne(TableClasses, uid)
-	if err == nil {
-		return true
-	}
-	return false
+	return err
 }
 
 func AppendClassStudent(uid string, student string) error {

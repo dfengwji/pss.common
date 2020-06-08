@@ -88,7 +88,7 @@ func GetAllNoteBooks() ([]*NoteBook, error) {
 	return items, nil
 }
 
-func GetNoteBooksByOwner(owner uint64) ([]*NoteBook, error) {
+func GetNoteBooksByOwner(owner string) ([]*NoteBook, error) {
 	cursor, err1 := findMany(TableNoteBook, bson.M{"owner": owner}, 0)
 	if err1 != nil {
 		return nil, err1

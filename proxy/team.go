@@ -93,12 +93,9 @@ func UpdateTeamBook(uid string, book string) error {
 	return err
 }
 
-func RemoveTeam(uid string) bool {
+func RemoveTeam(uid string) error {
 	_, err := removeOne(TableTeam, uid)
-	if err == nil {
-		return true
-	}
-	return false
+	return err
 }
 
 func AppendTeamMember(uid string, member string) error {
