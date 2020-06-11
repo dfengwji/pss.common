@@ -61,7 +61,7 @@ func GetAllOriginBooks() ([]*OriginBook, error) {
 		return nil, err1
 	}
 	defer cursor.Close(context.Background())
-	var items = make([]*OriginBook, 0, 200)
+	var items = make([]*OriginBook, 0, 100)
 	for cursor.Next(context.Background()) {
 		var node = new(OriginBook)
 		if err := cursor.Decode(node); err != nil {
@@ -93,7 +93,7 @@ func GetAllOriginStyles() ([]*OriginStyle, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*OriginStyle, 0, 200)
+	var items = make([]*OriginStyle, 0, 100)
 	for cursor.Next(context.Background()) {
 		var node = new(OriginStyle)
 		if err := cursor.Decode(node); err != nil {

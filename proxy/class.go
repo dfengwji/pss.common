@@ -56,7 +56,7 @@ func GetClassesByScene(scene string) ([]*EduClass, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*EduClass, 0, 200)
+	var items = make([]*EduClass, 0, 100)
 	for cursor.Next(context.Background()) {
 		var node = new(EduClass)
 		if err := cursor.Decode(node); err != nil {

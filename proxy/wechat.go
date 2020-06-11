@@ -71,7 +71,7 @@ func GetAllWechats() ([]*Wechat, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*Wechat, 0, 200)
+	var items = make([]*Wechat, 0, 2000)
 	for cursor.Next(context.Background()) {
 		var node = new(Wechat)
 		if err := cursor.Decode(node); err != nil {

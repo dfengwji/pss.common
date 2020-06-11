@@ -58,7 +58,7 @@ func GetNotebookStylesByOrigin(book string) ([]*NotebookStyle, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*NotebookStyle, 0, 10000)
+	var items = make([]*NotebookStyle, 0, 30)
 	for cursor.Next(context.Background()) {
 		var node = new(NotebookStyle)
 		if err := cursor.Decode(node); err != nil {

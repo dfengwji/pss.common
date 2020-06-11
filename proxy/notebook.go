@@ -94,7 +94,7 @@ func GetNoteBooksByOwner(owner string) ([]*NoteBook, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*NoteBook, 0, 200)
+	var items = make([]*NoteBook, 0, 20)
 	for cursor.Next(context.Background()) {
 		var node = new(NoteBook)
 		if err := cursor.Decode(node); err != nil {

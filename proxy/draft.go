@@ -23,9 +23,22 @@ type CourseDraft struct {
 	Start       uint64             `json:"start" bson:"start"`
 	TaskUID     string             `json:"task" bson:"task"`
 	Open        uint8 				`json:"open" bson:"open"`
+	AutoFit     uint8 				`json:"fit" bson:"fit"`
+	WaterMark   uint8 				`json:"watermark" bson:"watermark"`
 	Tags 		[]string 			`json:"tags" bson:"tags"`
 	Audios      []string           `json:"audios" bson:"audios"`
 	OpenTargets	[]string 			`json:"targets" bson:"targets"`
+	Events      []DraftEvent 		`json:"events" bson:"events"`
+}
+
+type DraftEvent struct {
+	Type uint8 `json:"type" bson:"type"`
+	Stamp uint64 `json:"stamp" bson:"stamp"`
+	URL string `json:"url" bson:"url"`
+	X float32 `json:"x" bson:"x"`
+	Y float32 `json:"y" bson:"y"`
+	Width float32 `json:"width" bson:"width"`
+	Height float32 `json:"height" bson:"height"`
 }
 
 func CreateCourseDraft(info *CourseDraft) error {

@@ -44,7 +44,43 @@ func GetTeamesByDepartment(department string) ([]*Team, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*Team, 0, 200)
+	var items = make([]*Team, 0, 20)
+	for cursor.Next(context.Background()) {
+		var node = new(Team)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func GetTeamesByCreator(creator string) ([]*Team, error) {
+	msg := bson.M{"creator": creator, "deleteAt": new(time.Time)}
+	cursor, err1 := findMany(TableTeam, msg, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*Team, 0, 20)
+	for cursor.Next(context.Background()) {
+		var node = new(Team)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func GetTeamesByMaster(master string) ([]*Team, error) {
+	msg := bson.M{"master": master, "deleteAt": new(time.Time)}
+	cursor, err1 := findMany(TableTeam, msg, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*Team, 0, 20)
 	for cursor.Next(context.Background()) {
 		var node = new(Team)
 		if err := cursor.Decode(node); err != nil {

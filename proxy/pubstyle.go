@@ -44,7 +44,7 @@ func GetAllPublicStyles() ([]*PublicStyle, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*PublicStyle, 0, 10000)
+	var items = make([]*PublicStyle, 0, 1000)
 	for cursor.Next(context.Background()) {
 		var node = new(PublicStyle)
 		if err := cursor.Decode(node); err != nil {
@@ -62,7 +62,7 @@ func GetPublicStylesByBook(book string) ([]*PublicStyle, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*PublicStyle, 0, 10000)
+	var items = make([]*PublicStyle, 0, 1000)
 	for cursor.Next(context.Background()) {
 		var node = new(PublicStyle)
 		if err := cursor.Decode(node); err != nil {

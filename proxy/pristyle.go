@@ -42,7 +42,7 @@ func GetPrivateStyles() ([]*PrivateStyle, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*PrivateStyle, 0, 10000)
+	var items = make([]*PrivateStyle, 0, 1000)
 	for cursor.Next(context.Background()) {
 		var node = new(PrivateStyle)
 		if err := cursor.Decode(node); err != nil {
@@ -60,7 +60,7 @@ func GetPrivateStylesByBook(book string) ([]*PrivateStyle, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*PrivateStyle, 0, 10000)
+	var items = make([]*PrivateStyle, 0, 1000)
 	for cursor.Next(context.Background()) {
 		var node = new(PrivateStyle)
 		if err := cursor.Decode(node); err != nil {

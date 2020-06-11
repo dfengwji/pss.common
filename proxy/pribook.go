@@ -67,7 +67,7 @@ func GetPrivateBooks() ([]*PrivateBook, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*PrivateBook, 0, 200)
+	var items = make([]*PrivateBook, 0, 50)
 	for cursor.Next(context.Background()) {
 		var node = new(PrivateBook)
 		if err := cursor.Decode(node); err != nil {
@@ -85,7 +85,7 @@ func GetPrivateBooksByAuthor(author string) ([]*PrivateBook, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*PrivateBook, 0, 200)
+	var items = make([]*PrivateBook, 0, 50)
 	for cursor.Next(context.Background()) {
 		var node = new(PrivateBook)
 		if err := cursor.Decode(node); err != nil {

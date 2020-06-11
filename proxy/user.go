@@ -88,7 +88,7 @@ func GetAllUsers() ([]*User, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*User, 0, 200)
+	var items = make([]*User, 0, 2000)
 	for cursor.Next(context.Background()) {
 		var node = new(User)
 		if err := cursor.Decode(node); err != nil {

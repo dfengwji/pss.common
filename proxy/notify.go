@@ -95,7 +95,7 @@ func GetNotifiesByAuthor(author uint64) ([]*Notify, error) {
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*Notify, 0, 200)
+	var items = make([]*Notify, 0, 100)
 	for cursor.Next(context.Background()) {
 		var node = new(Notify)
 		if err := cursor.Decode(node); err != nil {
