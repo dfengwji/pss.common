@@ -83,6 +83,11 @@ const (
 	TableMarking = "marking"
 
 	/**
+	提审的笔迹表
+	 */
+	TableReview = "review"
+
+	/**
 	数量自动增加
 	*/
 	TableSequence = "sequences"
