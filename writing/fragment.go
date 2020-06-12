@@ -115,8 +115,8 @@ func (mine *FragmentInfo) ParseHex(msgType string, hex string) error {
 		mine.hex = hex
 		mine.BookInstance, _ = hexToUnit(hex[0:8])
 		mine.Counter,_ = formatString(hex[8:16])
-		mine.Color = hex[16:18]
-		mine.kind = hex[18:22]
+		mine.Color = hex[16:20]
+		mine.kind = hex[20:22]
 		if mine.kind == KindChirography {
 			mine.BookTemplate,_ = hexToUnit(hex[22:26])
 			mine.Section,_ = formatString(hex[26:30])
