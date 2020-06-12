@@ -98,8 +98,9 @@ func (mine *FragmentInfo) HasPenUp() bool {
 }
 
 func (mine *FragmentInfo) ParseHex(msgType string, hex string) error {
+	max := 46
 	if msgType == MessageReqConnect {
-		if len(hex) < 38 {
+		if len(hex) < max {
 			return nil
 		}
 		mine.Counter,_ = formatString(hex[0:8])
@@ -109,7 +110,7 @@ func (mine *FragmentInfo) ParseHex(msgType string, hex string) error {
 		//wifi笔盒这里的token就是mac
 		mine.Mac = hex[38 : 38+size*2]
 	} else if msgType == MessageReqData {
-		if len(hex) < 38 {
+		if len(hex) < max {
 			return errors.New("the message format length is must more than 38")
 		}
 		mine.hex = hex
@@ -123,10 +124,10 @@ func (mine *FragmentInfo) ParseHex(msgType string, hex string) error {
 			mine.Owner,_ = formatString(hex[30:34])
 			mine.Page,_ = hexToUnit16(hex[34:36])
 			mine.Stamp,_ = hexToUnit(hex[36:44])
-			num, _ := strconv.ParseInt(hex[44:46], 16, 32)
+			num, _ := strconv.ParseInt(hex[44:max], 16, 32)
 			mine.PointNum = int(num)
 			mine.Points = make([]*DotInfo, 0, mine.PointNum)
-			sub := hex[38:]
+			sub := hex[max:]
 			mine.dotHex = sub
 			if len(sub) < mine.PointNum * DotHexLength {
 				return errors.New("the points hex length is less than max length that num = " + strconv.FormatInt(num,10))
