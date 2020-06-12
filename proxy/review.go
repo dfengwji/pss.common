@@ -20,7 +20,12 @@ type Review struct {
 	Author      string 				`json:"author" bson:"author"`
 	Book        string 				`json:"book" bson:"book"`
 	// 笔记本页面快照
-	Pages     []string             `json:"pages" bson:"pages"`
+	Pages     []PageSnap             `json:"pages" bson:"pages"`
+}
+
+type PageSnap struct {
+	Index uint16 `json:"index" bson:"index"`
+	Snapshot string `json:"snapshot" bson:"snapshot"`
 }
 
 func CreateReview(info *Review) error {
@@ -75,6 +80,28 @@ func GetReviewByAuthor(author string) (*Review, error) {
 		return nil, err1
 	}
 	return model, nil
+}
+
+func GetReviewsByAuthor(owner string) ([]*Review, error) {
+	cursor, err1 := findMany(TableNoteBook, bson.M{"author": owner}, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*Review, 0, 20)
+	for cursor.Next(context.Background()) {
+		var node = new(Review)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func RemoveReview(uid string) error {
+	_, err := removeOne(TableReview, uid)
+	return err
 }
 
 func UpdateReviewBase(uid string, st uint8, score uint16, postil string) error {
