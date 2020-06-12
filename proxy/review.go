@@ -17,6 +17,7 @@ type Review struct {
 	Status      uint8              `json:"status" bson:"status"`
 	Score       uint16             `json:"score" bson:"score"`
 	Postil      string             `json:"postil" bson:"postil"`
+	Leader		string 				`json:"leader" bson:"leader"`
 	Author      string 				`json:"author" bson:"author"`
 	Book        string 				`json:"book" bson:"book"`
 	// 笔记本页面快照
@@ -83,7 +84,24 @@ func GetReviewByAuthor(author string) (*Review, error) {
 }
 
 func GetReviewsByAuthor(owner string) ([]*Review, error) {
-	cursor, err1 := findMany(TableNoteBook, bson.M{"author": owner}, 0)
+	cursor, err1 := findMany(TableReview, bson.M{"author": owner}, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*Review, 0, 20)
+	for cursor.Next(context.Background()) {
+		var node = new(Review)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func GetReviewsByLeader(leader string) ([]*Review, error) {
+	cursor, err1 := findMany(TableReview, bson.M{"leader": leader}, 0)
 	if err1 != nil {
 		return nil, err1
 	}
@@ -106,7 +124,7 @@ func RemoveReview(uid string) error {
 
 func UpdateReviewBase(uid string, st uint8, score uint16, postil string) error {
 	msg := bson.M{"status": st, "score": score, "postil": postil, "updatedAt": time.Now()}
-	_, err := updateOne(TableWriting, uid, msg)
+	_, err := updateOne(TableReview, uid, msg)
 	return err
 }
 
