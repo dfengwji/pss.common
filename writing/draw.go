@@ -116,6 +116,44 @@ func DrawPoints(points []*DotInfo, canvasSize Vector2, paperSize Vector2, path s
 	return nil
 }
 
+func DrawImage(points []*DotInfo, canvasSize Vector2, paperSize Vector2, path string) (*bytes.Buffer, error) {
+	if points == nil {
+		return nil, errors.New("the points is nil")
+	}
+	length := len(points)
+	if length < 1 {
+		return nil, errors.New("the points is empty")
+	}
+	//t := fmt.Sprintf("try draw points num = %d that uid = %s", length, uid)
+	var canvas *gg.Context
+	canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
+	canvas.SetRGB(0, 0, 0)
+	canvas.SetLineCapRound()
+	isUp := false
+	for i := 0; i < length; i++ {
+		up := drawGraph(canvas, points[i], canvasSize, paperSize)
+		if up {
+			isUp = true
+		}
+	}
+
+	if isUp {
+		buf := bytes.NewBuffer(nil)
+		err := png.Encode(buf, canvas.Image())
+		if err != nil {
+			return nil, err
+		}
+		if len(path) > 0 {
+			err2 := canvas.SavePNG(path)
+			if err2 != nil {
+				return nil, err2
+			}
+		}
+		return buf, nil
+	}
+	return nil,errors.New("the up action not found")
+}
+
 func DrawPointSamples(points []*PointSample, size Vector2, paper Vector2) {
 	path := "files/images/test-3.png"
 	var canvas *gg.Context
