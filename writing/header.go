@@ -54,7 +54,7 @@ func (mine *HeaderInfo) ParseHex(hex string) {
 }
 
 func (mine *HeaderInfo) Sender() uint64 {
-	return mine.writerID
+	return mine.senderID
 }
 
 func (mine *HeaderInfo) Writer() uint64 {

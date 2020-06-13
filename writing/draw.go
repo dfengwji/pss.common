@@ -48,17 +48,12 @@ var (
 	yellow color.Color = color.RGBA{255, 218, 87, 255}
 )
 
-var canvasSize = Vector2{X: 600, Y: 800}
-var paperSize = Vector2{X: 290, Y: 210}
 var paperOffset = Vector2{X: 0, Y: 0}
 var codepointX = 1.524
 var codepointY = 1.524
 var lastPoint = new(Vector2)
 
-var canvas *gg.Context
-var imageNum = 0
 var pointIndex = -1
-var gWidth = 1.0 //笔迹粗细
 
 var gX0, gX1, gX2, gX3 float64
 var gY0, gY1, gY2, gY3 float64
@@ -86,7 +81,7 @@ type RenderPoint struct {
 	Y   float64  // 实际渲染坐标Y
 }
 
-func DrawPoints(points []*DotInfo, uid string) error {
+func DrawPoints(points []*DotInfo, canvasSize Vector2, paperSize Vector2, path string) error {
 	if points == nil {
 		return errors.New("the points is nil")
 	}
@@ -95,20 +90,13 @@ func DrawPoints(points []*DotInfo, uid string) error {
 		return errors.New("the points is empty")
 	}
 	//t := fmt.Sprintf("try draw points num = %d that uid = %s", length, uid)
-	path := fmt.Sprintf("files/images/img_%s.png", uid)
-	if canvas == nil {
-		canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
-		canvas.SetRGB(0, 0, 0)
-		canvas.SetLineCapRound()
-	} else {
-		canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
-		canvas.SetRGB(0, 0, 0)
-		canvas.SetLineCapRound()
-	}
-	imageNum += length
+	var canvas *gg.Context
+	canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
+	canvas.SetRGB(0, 0, 0)
+	canvas.SetLineCapRound()
 	isUp := false
 	for i := 0; i < length; i++ {
-		up := drawGraph(points[i])
+		up := drawGraph(canvas, points[i], canvasSize, paperSize)
 		if up {
 			isUp = true
 		}
@@ -128,16 +116,15 @@ func DrawPoints(points []*DotInfo, uid string) error {
 	return nil
 }
 
-func DrawPointSamples(points []*PointSample) {
+func DrawPointSamples(points []*PointSample, size Vector2, paper Vector2) {
 	path := "files/images/test-3.png"
-	if canvas == nil {
-		canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
-		canvas.SetRGB(0, 0, 0)
-		canvas.SetLineCapRound()
-	}
+	var canvas *gg.Context
+	canvas = gg.NewContext(int(size.X), int(size.Y))
+	canvas.SetRGB(0, 0, 0)
+	canvas.SetLineCapRound()
 	//imageNum += 1
 	for i := 0; i < len(points); i++ {
-		drawGraph2(points[i])
+		drawGraph2(canvas, points[i], size, paper)
 	}
 
 	err2 := canvas.SavePNG(path)
@@ -303,26 +290,27 @@ func SavePNG(_dots []*DotInfo, _options RenderOptions, _filepath string) error {
 	return newCanvas.SavePNG(_filepath)
 }
 
-func drawGraph(point *DotInfo) bool {
+func drawGraph(canvas *gg.Context, point *DotInfo, size Vector2, paper Vector2) bool {
 	if point == nil {
 		return false
 	}
 
 	coordinateX := float64(point.FX)/100.0 + float64(point.X)
 	coordinateY := float64(point.FY)/100.0 + float64(point.Y)
-	xx := coordinateX * canvasSize.X
-	ax := paperSize.X / codepointX
+	xx := coordinateX * size.X
+	ax := paper.X / codepointX
 	px := xx / ax
 	x := px + paperOffset.X
 	//x := roundNum(px, 13)
 
-	yy := coordinateY * canvasSize.Y
-	ay := paperSize.Y / codepointY
+	yy := coordinateY * size.Y
+	ay := paper.Y / codepointY
 	py := yy / ay
 	y := py + paperOffset.Y
 	color := getColor(point.Color)
 	//y := roundNum(py, 13)
-	gWidth = float64(point.Scale) * 2.0
+	//笔迹粗细
+	gWidth := float64(point.Scale * 2.0)
 	if point.Action == DotActionDown {
 		touchDown(canvas, x, y, color, gWidth, 1.0, point.Force)
 	} else if point.Action == DotActionMove {
@@ -334,29 +322,29 @@ func drawGraph(point *DotInfo) bool {
 	return false
 }
 
-func drawGraph2(point *PointSample) {
+func drawGraph2(canvas *gg.Context, point *PointSample, size Vector2, paper Vector2) {
 	if point == nil {
 		return
 	}
 
-	xx := point.X * canvasSize.X
-	ax := paperSize.X / codepointX
+	xx := point.X * size.X
+	ax := paper.X / codepointX
 	px := xx / ax
 	x := px + paperOffset.X
 	//x := roundNum(px, 13)
 
-	yy := point.Y * canvasSize.Y
-	ay := paperSize.Y / codepointY
+	yy := point.Y * size.Y
+	ay := paper.Y / codepointY
 	py := yy / ay
 	y := py + paperOffset.Y
 	//y := roundNum(py, 13)
 
 	if point.Action == DotActionDown {
-		touchDown(canvas, x, y, point.Color, gWidth, point.Scale, point.Force)
+		touchDown(canvas, x, y, point.Color, 1.0, point.Scale, point.Force)
 	} else if point.Action == DotActionMove {
-		touchMove(canvas, x, y, point.Color, gWidth, point.Scale, point.Force)
+		touchMove(canvas, x, y, point.Color, 1.0, point.Scale, point.Force)
 	} else if point.Action == DotActionUp {
-		touchUp(canvas, x, y, point.Color, gWidth)
+		touchUp(canvas, x, y, point.Color, 1.0)
 	}
 }
 
@@ -713,9 +701,9 @@ func fractal(img *image.RGBA) {
 	}
 }
 
-func fractal2(img *image.RGBA) {
-	dx := canvasSize.X
-	dy := canvasSize.Y
+func fractal2(img *image.RGBA, size Vector2) {
+	dx := size.X
+	dy := size.Y
 	userX := -0.794591379577363
 	userY := 0.16093921135504
 	zoom := int64(9990999900)
