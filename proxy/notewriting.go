@@ -4,7 +4,6 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
@@ -57,7 +56,7 @@ func GetNoteWriting(uid string) (*NoteWriting, error) {
 
 func GetNoteWritingByPage(writer uint64, book string, page uint16) (*NoteWriting, error) {
 	filter := bson.M{"writer": writer, "book": book, "page": page, "deleteAt": new(time.Time)}
-	result, err := findOneByOpt(TableNoteWriting, filter, bson.M{"dots": 0})
+	result, err := findOneBy(TableNoteWriting, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +70,7 @@ func GetNoteWritingByPage(writer uint64, book string, page uint16) (*NoteWriting
 
 func GetNoteWritingsByWriter(writer uint64, book string) ([]*NoteWriting, error) {
 	filter := bson.M{"writer": writer, "book": book, "deleteAt": new(time.Time)}
-	cursor, err := findManyByOpts(TableNoteWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
+	cursor, err := findMany(TableNoteWriting, filter, 20)
 	if err != nil {
 		return nil, err
 	}
