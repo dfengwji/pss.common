@@ -14,18 +14,19 @@ type Review struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
-	Status      uint8              `json:"status" bson:"status"`
-	Score       uint16             `json:"score" bson:"score"`
-	Postil      string             `json:"postil" bson:"postil"`
-	Leader		string 				`json:"leader" bson:"leader"`
-	Author      string 				`json:"author" bson:"author"`
-	Book        string 				`json:"book" bson:"book"`
+	Status   uint8  `json:"status" bson:"status"`
+	Score    uint16 `json:"score" bson:"score"`
+	Postil   string `json:"postil" bson:"postil"`
+	Examiner string `json:"examiner" bson:"examiner"`
+	Team     string `json:"team" bson:"team"`
+	Author   string `json:"author" bson:"author"`
+	Book     string `json:"book" bson:"book"`
 	// 笔记本页面快照
-	Pages     []PageSnap             `json:"pages" bson:"pages"`
+	Pages []PageSnap `json:"pages" bson:"pages"`
 }
 
 type PageSnap struct {
-	Index uint16 `json:"index" bson:"index"`
+	Index    uint16 `json:"index" bson:"index"`
 	Snapshot string `json:"snapshot" bson:"snapshot"`
 }
 
@@ -100,8 +101,25 @@ func GetReviewsByAuthor(owner string) ([]*Review, error) {
 	return items, nil
 }
 
-func GetReviewsByLeader(leader string) ([]*Review, error) {
-	cursor, err1 := findMany(TableReview, bson.M{"leader": leader}, 0)
+func GetReviewsByExaminer(examiner string) ([]*Review, error) {
+	cursor, err1 := findMany(TableReview, bson.M{"examiner": examiner}, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*Review, 0, 20)
+	for cursor.Next(context.Background()) {
+		var node = new(Review)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func GetReviewsByTeam(team string) ([]*Review, error) {
+	cursor, err1 := findMany(TableReview, bson.M{"team": team}, 0)
 	if err1 != nil {
 		return nil, err1
 	}
@@ -127,4 +145,3 @@ func UpdateReviewBase(uid string, st uint8, score uint16, postil string) error {
 	_, err := updateOne(TableReview, uid, msg)
 	return err
 }
-
