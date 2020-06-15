@@ -114,7 +114,7 @@ func UpdateNoteWritingSnapshot(uid string, snapshot string) error {
 	return err
 }
 
-func UpdateNoteWritingDots(uid string, stamp uint64, num uint16, dots string, duration uint16) error {
+func UpdateNoteWritingDots(uid string, stamp uint64, num uint32, dots string, duration uint16) error {
 	msg := bson.M{"dotStamp": stamp, "dotNum": num, "dots": dots, "duration": duration, "updatedAt": time.Now()}
 	_, err := updateOne(TableNoteWriting, uid, msg)
 	return err

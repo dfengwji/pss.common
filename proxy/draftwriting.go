@@ -79,7 +79,7 @@ func GetDraftWritingDots(uid string) (*DraftWriting, error) {
 	return model, nil
 }
 
-func UpdateDraftWritingDots(uid string, stamp uint64, num uint16, hex string, duration uint16) error {
+func UpdateDraftWritingDots(uid string, stamp uint64, num uint32, hex string, duration uint16) error {
 	msg := bson.M{"dotStamp": stamp, "dotNum": num, "dots": hex, "duration": duration, "updatedAt": time.Now()}
 	_, err := updateOne(TableDraftWriting, uid, msg)
 	return err

@@ -98,8 +98,8 @@ func (mine *RecognizerInfo) Bytes() []byte {
 	for i := 0; i < length; i += 1 {
 		dot := mine.dots[i]
 		s := group.Strokes[len(group.Strokes) - 1]
-		s.Xs = append(s.Xs, float64(dot.X*100+dot.FX)-point.X)
-		s.Ys = append(s.Ys, float64(dot.Y*100+dot.FY)-point.Y)
+		s.Xs = append(s.Xs, float64(dot.TX*100+dot.FX)-point.X)
+		s.Ys = append(s.Ys, float64(dot.TY*100+dot.FY)-point.Y)
 		s.Ts = append(s.Ts, dot.Stamp)
 		if dot.Action == DotActionUp && i < length - 1 {
 			tmp := mine.NewStroke()
@@ -116,12 +116,12 @@ func (mine *RecognizerInfo) basePoint() *Point {
 		return nil
 	}
 	var point = new(Point)
-	point.X = float64(mine.dots[0].X*100 + mine.dots[0].FX)
-	point.Y = float64(mine.dots[0].Y*100 + mine.dots[0].FY)
+	point.X = float64(mine.dots[0].TX*100 + mine.dots[0].FX)
+	point.Y = float64(mine.dots[0].TY*100 + mine.dots[0].FY)
 	for i := 0; i < length; i += 1 {
 		dot := mine.dots[i]
-		xx := float64(dot.X*100 + dot.FX)
-		yy := float64(dot.Y*100 + dot.FY)
+		xx := float64(dot.TX*100 + dot.FX)
+		yy := float64(dot.TY*100 + dot.FY)
 		if point.X > xx {
 			point.X = xx
 		}

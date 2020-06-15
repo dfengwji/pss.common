@@ -20,8 +20,8 @@ type DotInfo struct {
 	Action uint8
 	Force  uint16
 	Scale  uint8
-	X      uint32
-	Y      uint32
+	TX      uint32
+	TY      uint32
 	FX     uint32
 	FY     uint32
 	Color  uint32
@@ -39,8 +39,8 @@ type PointSample struct {
 }
 
 func (mine *DotInfo) String() string {
-	tmp := fmt.Sprintf("act = %d;force = %d; x = %d, y = %d, fx = %d, fy = %d",
-		mine.Action, mine.Force, mine.X, mine.Y, mine.FX, mine.FY)
+	tmp := fmt.Sprintf("act = %d;force = %d; tx = %d, ty = %d, fx = %d, fy = %d",
+		mine.Action, mine.Force, mine.TX, mine.TY, mine.FX, mine.FY)
 	return tmp
 }
 
@@ -50,17 +50,17 @@ func (mine *DotInfo) Hex() string {
 
 
 func (mine *DotInfo)Coordinate() (x float32, y float32) {
-	x = float32(mine.X) + float32(mine.FX)/100
-	y = float32(mine.Y) + float32(mine.FY)/100
+	x = float32(mine.TX) + float32(mine.FX)/100
+	y = float32(mine.TY) + float32(mine.FY)/100
 	return x,y
 }
 
 func (mine *DotInfo)DistX() float32 {
-	return float32(mine.X) + float32(mine.FX)/100
+	return float32(mine.TX) + float32(mine.FX)/100
 }
 
 func (mine *DotInfo)DistY() float32 {
-	return float32(mine.Y) + float32(mine.FY)/100
+	return float32(mine.TY) + float32(mine.FY)/100
 }
 
 // Transform 根据纸张大小和画布大小转换XY坐标
@@ -99,9 +99,9 @@ func (mine *DotInfo) ParseHex(hex string) error {
 	s, _ := strconv.ParseUint(hex[5:6], 16, 32)
 	mine.Scale = uint8(s)
 	x, _ := strconv.ParseUint(hex[6:10], 16, 32)
-	mine.X = uint32(x)
+	mine.TX = uint32(x)
 	y, _ := strconv.ParseUint(hex[10:14], 16, 32)
-	mine.Y = uint32(y)
+	mine.TY = uint32(y)
 	fx, _ := strconv.ParseUint(hex[14:16], 16, 32)
 	mine.FX = uint32(fx)
 	fy, _ := strconv.ParseUint(hex[16:18], 16, 32)
@@ -124,9 +124,9 @@ func (mine *DotInfo) ParseHexV1(hex string, hexLength int) error {
 	s, _ := strconv.ParseUint(hex[5:6], 16, 32)
 	mine.Scale = uint8(s)
 	x, _ := strconv.ParseUint(hex[6:10], 16, 32)
-	mine.X = uint32(x)
+	mine.TX = uint32(x)
 	y, _ := strconv.ParseUint(hex[10:14], 16, 32)
-	mine.Y = uint32(y)
+	mine.TY = uint32(y)
 	fx, _ := strconv.ParseUint(hex[14:16], 16, 32)
 	mine.FX = uint32(fx)
 	fy, _ := strconv.ParseUint(hex[16:18], 16, 32)

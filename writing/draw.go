@@ -279,8 +279,8 @@ func SavePNG(_dots []*DotInfo, _options RenderOptions, _filepath string) error {
 
 		// FX代表小数部分，X代表整数部分
 		// 计算出点的浮点型的坐标
-		dotX := float64(dot.FX)/100.0 + float64(dot.X)
-		dotY := float64(dot.FY)/100.0 + float64(dot.Y)
+		dotX := float64(dot.FX)/100.0 + float64(dot.TX)
+		dotY := float64(dot.FY)/100.0 + float64(dot.TY)
 
 		//fmt.Println(fmt.Sprintf("dotX: %v, dotY: %v", dotX, dotY))
 
@@ -358,8 +358,8 @@ func drawGraph(canvas *gg.Context, point *DotInfo, size Vector2, paper Vector2) 
 		return false
 	}
 
-	coordinateX := float64(point.FX)/100.0 + float64(point.X)
-	coordinateY := float64(point.FY)/100.0 + float64(point.Y)
+	coordinateX := float64(point.FX)/100.0 + float64(point.TX)
+	coordinateY := float64(point.FY)/100.0 + float64(point.TY)
 	xx := coordinateX * size.X
 	ax := paper.X / codepointX
 	px := xx / ax

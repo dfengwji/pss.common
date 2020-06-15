@@ -28,7 +28,7 @@ type Fragment struct {
 	Book 		uint64 				`json:"book" bson:"book"`
 	DotBook     uint64             `json:"dotBook" bson:"dotBook"`
 	DotPage     uint16             `json:"dotPage" bson:"dotPage"`
-	DotNum      uint16             `json:"dotNum" bson:"dotNum"`
+	DotNum      uint32             `json:"dotNum" bson:"dotNum"`
 	Dots        string             `json:"dots" bson:"dots"`
 }
 

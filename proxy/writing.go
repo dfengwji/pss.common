@@ -111,7 +111,7 @@ func GetWritingDots(uid string) (*Writing, error) {
 	return model, nil
 }
 
-func UpdateWritingDots(uid string, stamp uint64, num uint16, hex string, duration uint16) error {
+func UpdateWritingDots(uid string, stamp uint64, num uint32, hex string, duration uint16) error {
 	msg := bson.M{"dotStamp": stamp, "dotNum": num, "dots": hex, "duration": duration, "updatedAt": time.Now()}
 	_, err := updateOne(TableWriting, uid, msg)
 	return err
