@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type CourseDraft struct {
+type VideoDraft struct {
 	UID         primitive.ObjectID `bson:"_id"`
 	ID          uint64             `json:"id" bson:"id"`
 	CreatedTime time.Time          `json:"createdAt" bson:"createdAt"`
@@ -41,22 +41,22 @@ type DraftEvent struct {
 	Height float32 `json:"height" bson:"height"`
 }
 
-func CreateCourseDraft(info *CourseDraft) error {
-	_, err := insertOne(TableCourseDraft, info)
+func CreateCourseDraft(info *VideoDraft) error {
+	_, err := insertOne(TableVideoDraft, info)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetAllCourseDrafts() ([]*CourseDraft, error) {
-	cursor, err1 := findAll(TableCourseDraft, 0)
+func GetAllCourseDrafts() ([]*VideoDraft, error) {
+	cursor, err1 := findAll(TableVideoDraft, 0)
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*CourseDraft, 0, 10000)
+	var items = make([]*VideoDraft, 0, 10000)
 	for cursor.Next(context.Background()) {
-		var node = new(CourseDraft)
+		var node = new(VideoDraft)
 		if err := cursor.Decode(node); err != nil {
 			return nil, err
 		} else {
@@ -67,21 +67,21 @@ func GetAllCourseDrafts() ([]*CourseDraft, error) {
 }
 
 func GetCourseDraftNextID() uint64 {
-	num, _ := getSequenceNext(TableCourseDraft)
+	num, _ := getSequenceNext(TableVideoDraft)
 	return num
 }
 
 func RemoveCourseDraft(uid string) error {
-	_, err := removeOne(TableCourseDraft, uid)
+	_, err := removeOne(TableVideoDraft, uid)
 	return err
 }
 
-func GetCourseDraft(uid string) (*CourseDraft, error) {
-	result, err := findOne(TableCourseDraft, uid)
+func GetCourseDraft(uid string) (*VideoDraft, error) {
+	result, err := findOne(TableVideoDraft, uid)
 	if err != nil {
 		return nil, err
 	}
-	model := new(CourseDraft)
+	model := new(VideoDraft)
 	err1 := result.Decode(model)
 	if err1 != nil {
 		return nil, err1
@@ -89,15 +89,15 @@ func GetCourseDraft(uid string) (*CourseDraft, error) {
 	return model, nil
 }
 
-func GetCourseDraftsByAuthor(author string) ([]*CourseDraft, error) {
+func GetCourseDraftsByAuthor(author string) ([]*VideoDraft, error) {
 	msg := bson.M{"author": author, "deleteAt": new(time.Time)}
-	cursor, err1 := findMany(TableCourseDraft, msg, 0)
+	cursor, err1 := findMany(TableVideoDraft, msg, 0)
 	if err1 != nil {
 		return nil, err1
 	}
-	var items = make([]*CourseDraft, 0, 200)
+	var items = make([]*VideoDraft, 0, 200)
 	for cursor.Next(context.Background()) {
-		var node = new(CourseDraft)
+		var node = new(VideoDraft)
 		if err := cursor.Decode(node); err != nil {
 			return nil, err
 		} else {
@@ -109,43 +109,43 @@ func GetCourseDraftsByAuthor(author string) ([]*CourseDraft, error) {
 
 func UpdateCourseDraftBase(uid string, name string, remark string) error {
 	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
-	_, err := updateOne(TableCourseDraft, uid, msg)
+	_, err := updateOne(TableVideoDraft, uid, msg)
 	return err
 }
 
 func UpdateCourseDraftVideo(uid string, video string) error {
 	msg := bson.M{"video": video, "updatedAt": time.Now()}
-	_, err := updateOne(TableCourseDraft, uid, msg)
+	_, err := updateOne(TableVideoDraft, uid, msg)
 	return err
 }
 
 func UpdateCourseDraftMenu(uid string, menu string) error {
 	msg := bson.M{"menu": menu, "updatedAt": time.Now()}
-	_, err := updateOne(TableCourseDraft, uid, msg)
+	_, err := updateOne(TableVideoDraft, uid, msg)
 	return err
 }
 
 func UpdateCourseDraftTags(uid string, tags []string) error {
 	msg := bson.M{"tags": tags, "updatedAt": time.Now()}
-	_, err := updateOne(TableCourseDraft, uid, msg)
+	_, err := updateOne(TableVideoDraft, uid, msg)
 	return err
 }
 
 func UpdateCourseDraftCover(uid string, cover string) error {
 	msg := bson.M{"cover": cover, "updatedAt": time.Now()}
-	_, err := updateOne(TableCourseDraft, uid, msg)
+	_, err := updateOne(TableVideoDraft, uid, msg)
 	return err
 }
 
 func UpdateCourseDraftTask(uid string, task string) error {
 	msg := bson.M{"task": task, "updatedAt": time.Now()}
-	_, err := updateOne(TableCourseDraft, uid, msg)
+	_, err := updateOne(TableVideoDraft, uid, msg)
 	return err
 }
 
 func UpdateCourseDraftTargets(uid string,open uint8, targets []string) error {
 	msg := bson.M{"open":open, "targets": targets, "updatedAt": time.Now()}
-	_, err := updateOne(TableCourseDraft, uid, msg)
+	_, err := updateOne(TableVideoDraft, uid, msg)
 	return err
 }
 

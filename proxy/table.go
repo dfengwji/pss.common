@@ -129,14 +129,14 @@ const (
 	/*
 	微课
 	 */
-	TableMicroCourse  = "courses"
-	TableCourseDraft  = "drafts"
-	TableDraftWriting = "draftWritings"
-	TableNoteBook     = "notebooks"
+	TableMicroCourse   = "courses"
+	TableVideoDraft    = "drafts"
+	TableDraftWriting  = "draftWritings"
+	TableNoteBook      = "notebooks"
 	TableNotebookStyle = "notebookStyles"
-	TableNoteWriting  = "noteWritings"
-	TableMember		  = "members"
-	TableRoleID       = "roleIDs"
-	TableBookID       = "bookIDs"
-	TableNotify	  = "notifies"
+	TableNoteWriting   = "noteWritings"
+	TableMember        = "members"
+	TableRoleID        = "roleIDs"
+	TableBookID        = "bookIDs"
+	TableNotify        = "notifies"
 )

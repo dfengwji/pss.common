@@ -81,18 +81,47 @@ type RenderPoint struct {
 	Y   float64  // 实际渲染坐标Y
 }
 
-func DrawPoints(points []*DotInfo, canvasSize Vector2, paperSize Vector2, path string) error {
+func DrawDots(points []*DotInfo, canvasSize Vector2, paperSize Vector2) (image.Image, error) {
 	if points == nil {
-		return errors.New("the points is nil")
+		return nil, errors.New("the points is nil")
 	}
 	length := len(points)
 	if length < 1 {
-		return errors.New("the points is empty")
+		return nil, errors.New("the points is empty")
+	}
+	canvas := gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
+	canvas.SetRGB(0, 0, 0)
+	canvas.SetLineCapRound()
+	isUp := false
+	for i := 0; i < length; i++ {
+		up := drawGraph(canvas, points[i], canvasSize, paperSize)
+		if up {
+			isUp = true
+		}
+	}
+
+	if isUp {
+		return canvas.Image(), nil
+	}
+	return nil,errors.New("the up action not found")
+}
+
+func DrawDotsWithBG(points []*DotInfo, canvasSize Vector2, paperSize Vector2, bg image.Image, path string) (image.Image, error) {
+	if points == nil {
+		return nil,errors.New("the points is nil")
+	}
+	length := len(points)
+	if length < 1 {
+		return nil,errors.New("the points is empty")
 	}
 	//t := fmt.Sprintf("try draw points num = %d that uid = %s", length, uid)
 	var canvas *gg.Context
-	canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
-	canvas.SetRGB(0, 0, 0)
+	if bg != nil{
+		canvas = gg.NewContextForImage(bg)
+	}else{
+		canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
+		canvas.SetRGB(0, 0, 0)
+	}
 	canvas.SetLineCapRound()
 	isUp := false
 	for i := 0; i < length; i++ {
@@ -105,15 +134,11 @@ func DrawPoints(points []*DotInfo, canvasSize Vector2, paperSize Vector2, path s
 	if isUp {
 		err2 := canvas.SavePNG(path)
 		if err2 != nil {
-			return err2
+			return nil,err2
 		}
-		buf := new(bytes.Buffer)
-		err := png.Encode(buf, canvas.Image())
-		if err != nil {
-			return err
-		}
+		return canvas.Image(), nil
 	}
-	return nil
+	return nil,errors.New("the up action not found")
 }
 
 func DrawImage(points []*DotInfo, canvasSize Vector2, paperSize Vector2, path string) (*bytes.Buffer, error) {
