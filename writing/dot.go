@@ -18,8 +18,8 @@ const DotHexLength = 31
 
 type DotInfo struct {
 	Action uint8
-	Force  uint16
 	Scale  uint8
+	Force  uint16
 	TX      uint32
 	TY      uint32
 	FX     uint32
@@ -41,8 +41,8 @@ type PointSample struct {
 }
 
 func (mine *DotInfo) String() string {
-	tmp := fmt.Sprintf("act = %d;force = %d; tx = %d, ty = %d, fx = %d, fy = %d",
-		mine.Action, mine.Force, mine.TX, mine.TY, mine.FX, mine.FY)
+	tmp := fmt.Sprintf("act = %d;force = %d; x = %f, y = %f",
+		mine.Action, mine.Force, mine.X, mine.Y)
 	return tmp
 }
 
@@ -51,18 +51,13 @@ func (mine *DotInfo) Hex() string {
 }
 
 
-func (mine *DotInfo)Coordinate() (x float32, y float32) {
-	x = float32(mine.TX) + float32(mine.FX)/100
-	y = float32(mine.TY) + float32(mine.FY)/100
-	return x,y
-}
-
-func (mine *DotInfo)DistX() float32 {
-	return float32(mine.TX) + float32(mine.FX)/100
-}
-
-func (mine *DotInfo)DistY() float32 {
-	return float32(mine.TY) + float32(mine.FY)/100
+func (mine *DotInfo)coordinate(tx, ty, fx, fy uint32) {
+	mine.TX = tx
+	mine.TY = ty
+	mine.FX = fx
+	mine.FY = fy
+	mine.X = float32(tx) + float32(fx)/100
+	mine.Y = float32(ty) + float32(fy)/100
 }
 
 // Transform 根据纸张大小和画布大小转换XY坐标
@@ -84,8 +79,8 @@ func (mine *DotInfo) Transform(w float32, h float32, code Vector2, dist Vector2)
 		canvasW = canvasH * w1 / h1
 	}
 
-	x2 := (mine.DistX() * float32(dist.X) * canvasW) / w1
-	y2 := (mine.DistY() * float32(dist.Y) * canvasH) / h1
+	x2 := (mine.X * float32(dist.X) * canvasW) / w1
+	y2 := (mine.Y * float32(dist.Y) * canvasH) / h1
 	return x2, y2
 }
 
@@ -101,16 +96,13 @@ func (mine *DotInfo) ParseHex(hex string) error {
 	s, _ := strconv.ParseUint(hex[5:6], 16, 32)
 	mine.Scale = uint8(s)
 	x, _ := strconv.ParseUint(hex[6:10], 16, 32)
-	mine.TX = uint32(x)
 	y, _ := strconv.ParseUint(hex[10:14], 16, 32)
-	mine.TY = uint32(y)
 	fx, _ := strconv.ParseUint(hex[14:16], 16, 32)
-	mine.FX = uint32(fx)
 	fy, _ := strconv.ParseUint(hex[16:18], 16, 32)
-	mine.FY = uint32(fy)
 	col, _ := strconv.ParseUint(hex[18:20], 16, 32)
 	mine.Color = uint32(col)
 	mine.Stamp, _ = strconv.ParseUint(hex[20:], 16, 64)
+	mine.coordinate(uint32(x),  uint32(y), uint32(fx), uint32(fy))
 	return nil
 }
 
@@ -126,16 +118,13 @@ func (mine *DotInfo) ParseHexV1(hex string, hexLength int) error {
 	s, _ := strconv.ParseUint(hex[5:6], 16, 32)
 	mine.Scale = uint8(s)
 	x, _ := strconv.ParseUint(hex[6:10], 16, 32)
-	mine.TX = uint32(x)
 	y, _ := strconv.ParseUint(hex[10:14], 16, 32)
-	mine.TY = uint32(y)
 	fx, _ := strconv.ParseUint(hex[14:16], 16, 32)
-	mine.FX = uint32(fx)
 	fy, _ := strconv.ParseUint(hex[16:18], 16, 32)
-	mine.FY = uint32(fy)
 	col, _ := strconv.ParseUint(hex[18:20], 16, 32)
 	mine.Color = uint32(col)
 	mine.Stamp, _ = strconv.ParseUint(hex[20:], 16, 64)
+	mine.coordinate(uint32(x),  uint32(y), uint32(fx), uint32(fy))
 	return nil
 }
 

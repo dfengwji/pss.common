@@ -81,7 +81,7 @@ type RenderPoint struct {
 	Y   float64  // 实际渲染坐标Y
 }
 
-func DrawDots(points []*DotInfo, canvasSize Vector2, paperSize Vector2) (image.Image, error) {
+func DrawDots(points []*DotInfo, canvasSize Vector2, paperSize Vector2, bg float64) (*gg.Context, error) {
 	if points == nil {
 		return nil, errors.New("the points is nil")
 	}
@@ -90,7 +90,8 @@ func DrawDots(points []*DotInfo, canvasSize Vector2, paperSize Vector2) (image.I
 		return nil, errors.New("the points is empty")
 	}
 	canvas := gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
-	canvas.SetRGB(0, 0, 0)
+	canvas.SetRGB(bg, bg, bg)
+	canvas.Clear()
 	canvas.SetLineCapRound()
 	isUp := false
 	for i := 0; i < length; i++ {
@@ -101,12 +102,14 @@ func DrawDots(points []*DotInfo, canvasSize Vector2, paperSize Vector2) (image.I
 	}
 
 	if isUp {
-		return canvas.Image(), nil
+		return canvas, nil
+	}else{
+		canvas.Clear()
 	}
 	return nil,errors.New("the up action not found")
 }
 
-func DrawDotsWithBG(points []*DotInfo, canvasSize Vector2, paperSize Vector2, bg image.Image, path string) (image.Image, error) {
+func DrawDotsWithBG(points []*DotInfo, canvasSize Vector2, paperSize Vector2, bg image.Image) (*gg.Context, error) {
 	if points == nil {
 		return nil,errors.New("the points is nil")
 	}
@@ -132,11 +135,9 @@ func DrawDotsWithBG(points []*DotInfo, canvasSize Vector2, paperSize Vector2, bg
 	}
 
 	if isUp {
-		err2 := canvas.SavePNG(path)
-		if err2 != nil {
-			return nil,err2
-		}
-		return canvas.Image(), nil
+		return canvas, nil
+	}else{
+		canvas.Clear()
 	}
 	return nil,errors.New("the up action not found")
 }
@@ -150,8 +151,7 @@ func DrawImage(points []*DotInfo, canvasSize Vector2, paperSize Vector2, path st
 		return nil, errors.New("the points is empty")
 	}
 	//t := fmt.Sprintf("try draw points num = %d that uid = %s", length, uid)
-	var canvas *gg.Context
-	canvas = gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
+	canvas := gg.NewContext(int(canvasSize.X), int(canvasSize.Y))
 	canvas.SetRGB(0, 0, 0)
 	canvas.SetLineCapRound()
 	isUp := false
@@ -161,7 +161,7 @@ func DrawImage(points []*DotInfo, canvasSize Vector2, paperSize Vector2, path st
 			isUp = true
 		}
 	}
-
+	defer canvas.Clear()
 	if isUp {
 		buf := bytes.NewBuffer(nil)
 		err := png.Encode(buf, canvas.Image())
@@ -279,8 +279,8 @@ func SavePNG(_dots []*DotInfo, _options RenderOptions, _filepath string) error {
 
 		// FX代表小数部分，X代表整数部分
 		// 计算出点的浮点型的坐标
-		dotX := float64(dot.FX)/100.0 + float64(dot.TX)
-		dotY := float64(dot.FY)/100.0 + float64(dot.TY)
+		dotX := float64(dot.X)
+		dotY := float64(dot.Y)
 
 		//fmt.Println(fmt.Sprintf("dotX: %v, dotY: %v", dotX, dotY))
 
@@ -358,8 +358,8 @@ func drawGraph(canvas *gg.Context, point *DotInfo, size Vector2, paper Vector2) 
 		return false
 	}
 
-	coordinateX := float64(point.FX)/100.0 + float64(point.TX)
-	coordinateY := float64(point.FY)/100.0 + float64(point.TY)
+	coordinateX := float64(point.X)
+	coordinateY := float64(point.Y)
 	xx := coordinateX * size.X
 	ax := paper.X / codepointX
 	px := xx / ax
