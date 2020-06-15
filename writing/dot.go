@@ -25,6 +25,8 @@ type DotInfo struct {
 	FX     uint32
 	FY     uint32
 	Color  uint32
+	X float32
+	Y float32
 	Stamp  uint64
 	hex    string
 }
