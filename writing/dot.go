@@ -48,6 +48,45 @@ func (mine *DotInfo) Hex() string {
 	return mine.hex
 }
 
+
+func (mine *DotInfo)Coordinate() (x float32, y float32) {
+	x = float32(mine.X) + float32(mine.FX)/100
+	y = float32(mine.Y) + float32(mine.FY)/100
+	return x,y
+}
+
+func (mine *DotInfo)DistX() float32 {
+	return float32(mine.X) + float32(mine.FX)/100
+}
+
+func (mine *DotInfo)DistY() float32 {
+	return float32(mine.Y) + float32(mine.FY)/100
+}
+
+// Transform 根据纸张大小和画布大小转换XY坐标
+// TODO: 动态适配纸张大小
+func (mine *DotInfo) Transform(w float32, h float32, code Vector2, dist Vector2) (float32, float32) {
+	w = w - 10 // TODO: 移植到video中
+	h = h - 10
+
+	w1 := float32(code.X)
+	h1 := float32(code.Y)
+
+	// 以画布宽度为准
+	canvasW := w
+	canvasH := canvasW * h1 / w1
+
+	// 如果高度超出，则以画布高度为准
+	if canvasH > h {
+		canvasH = h
+		canvasW = canvasH * w1 / h1
+	}
+
+	x2 := (mine.DistX() * float32(dist.X) * canvasW) / w1
+	y2 := (mine.DistY() * float32(dist.Y) * canvasH) / h1
+	return x2, y2
+}
+
 func (mine *DotInfo) ParseHex(hex string) error {
 	if len(hex) < DotHexLength {
 		return errors.New("the dot hex length is less than 30")

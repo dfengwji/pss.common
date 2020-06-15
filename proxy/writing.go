@@ -21,12 +21,12 @@ type Writing struct {
 	Exercise    string             `json:"exercise" bson:"exercise"`
 	Style       string             `json:"style" bson:"style"`
 	Color       string             `json:"color" bson:"color"`
-	DotBook     uint64             `json:"dotBook" bson:"dotBook"`
-	DotPage     uint16             `json:"dotPage" bson:"dotPage"`
-	DotStamp    uint64             `json:"dotStamp" bson:"dotStamp"`
-	DotNum      uint16             `json:"dotNum" bson:"dotNum"`
-	Dots        string             `json:"dots" bson:"dots"`
 	Duration    uint16             `json:"duration" bson:"duration"`
+	DotPage     uint16             `json:"dotPage" bson:"dotPage"`
+	DotBook     uint64             `json:"dotBook" bson:"dotBook"`
+	DotStamp    uint64             `json:"dotStamp" bson:"dotStamp"`
+	DotNum      uint32             `json:"dotNum" bson:"dotNum"`
+	Dots        string             `json:"dots" bson:"dots"`
 }
 
 func CreateWriting(info *Writing) error {

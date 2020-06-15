@@ -20,7 +20,7 @@ type DraftWriting struct {
 	Draft       string             `json:"draft" bson:"draft"`
 	Book        uint64             `json:"book" bson:"book"`
 	Page        uint16             `json:"page" bson:"page"`
-	Number      uint16             `json:"number" bson:"number"`
+	Number      uint32             `json:"number" bson:"number"`
 	Duration    uint16             `json:"duration" bson:"duration"`
 	Dots        string             `json:"dots" bson:"dots"`
 }

@@ -21,7 +21,7 @@ type NoteWriting struct {
 	DotBook  uint64 `json:"dotBook" bson:"dotBook"`
 	DotPage  uint16 `json:"dotPage" bson:"dotPage"`
 	DotStamp uint64 `json:"dotStamp" bson:"dotStamp"`
-	DotNum   uint16 `json:"dotNum" bson:"dotNum"`
+	DotNum   uint32 `json:"dotNum" bson:"dotNum"`
 	Duration uint16 `json:"duration" bson:"duration"`
 	Snapshot string `json:"snapshot" bson:"snapshot"`
 	Color    string `json:"color" bson:"color"`
