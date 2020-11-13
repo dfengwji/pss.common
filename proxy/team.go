@@ -16,11 +16,13 @@ type Team struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
+	Creator string `json:"creator" bson:"creator"`
+	Operator string `json:"operator" bson:"operator"`
 	MaxNum      uint16    `json:"maxNum" bson:"maxNum"`
 	Name        string    `json:"name" bson:"name"`
-	Creator  string `json:"creator" bson:"creator"`
 	Remark	 string `json:"remark" bson:"remark"`
 	Master    string   `json:"master" bson:"master"`
+	Assistant string `json:"assistant" bson:"assistant"`
 	Members  []string `json:"members" bson:"members"`
 	Department  string `json:"department" bson:"department"`
 }

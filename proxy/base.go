@@ -33,6 +33,13 @@ type FileInfo struct {
 	Type        string    `json:"type" bson:"type"`
 }
 
+type AddressInfo struct {
+	Country string `json:"country" bson:"country"`
+	Province string `json:"province" bson:"province"`
+	City string `json:"city" bson:"city"`
+	Zone string `json:"zone" bson:"zone"`
+}
+
 var noSql *mongo.Database
 var dbClient *mongo.Client
 

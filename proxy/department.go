@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -15,8 +16,14 @@ type Department struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
-	Scene string 		`json:"scene" bson:"scene"`
-	Remark string 		`json:"remark" bson:"remark"`
+	Creator  string   `json:"creator" bson:"creator"`
+	Operator string   `json:"operator" bson:"operator"`
+	Master   string   `json:"master" bson:"master"`
+	Scene    string   `json:"scene" bson:"scene"`
+	Remark   string   `json:"remark" bson:"remark"`
+	Address  AddressInfo   `json:"address" bson:"address"`
+	Location string   `json:"location" bson:"location"`
+	Members  []string `json:"members" bson:"members"`
 }
 
 func CreateDepartment(info *Department) error {
@@ -103,8 +110,32 @@ func GetDepartmentsByScene(scene string) ([]*Department, error) {
 	return items, nil
 }
 
-func UpdateDepartmentBase(uid, name, remark string) error {
-	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
+func UpdateDepartmentBase(uid, name, remark, location string) error {
+	msg := bson.M{"name": name, "remark": remark, "location": location, "updatedAt": time.Now()}
 	_, err := updateOne(TableDepartment, uid, msg)
+	return err
+}
+
+func UpdateDepartmentAddress(uid string, address AddressInfo) error {
+	msg := bson.M{"address": address, "updatedAt": time.Now()}
+	_, err := updateOne(TableDepartment, uid, msg)
+	return err
+}
+
+func AppendDepartMember(uid string, member string) error {
+	if len(member) < 1 {
+		return errors.New("the member uid is empty")
+	}
+	msg := bson.M{"members": member}
+	_, err := appendElement(TableDepartment, uid, msg)
+	return err
+}
+
+func UnbindDepartMember(uid string, member string) error {
+	if len(member) < 1 {
+		return errors.New("the member uid is empty")
+	}
+	msg := bson.M{"members": member}
+	_, err := removeElement(TableDepartment, uid, msg)
 	return err
 }

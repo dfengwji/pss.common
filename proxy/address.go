@@ -21,7 +21,7 @@ type Address struct {
 	Village     string             `json:"village" bson:"village"`
 	Street      string             `json:"street" bson:"street"`
 	Number      string             `json:"number" bson:"number"`
-	User        string             `json:"user" bson:"user"`
+	Owner        string             `json:"owner" bson:"owner"`
 }
 
 func CreateAddress(info *Address) error {
