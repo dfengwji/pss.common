@@ -40,7 +40,7 @@ func GetTeamNextID() uint64 {
 	return num
 }
 
-func GetTeamesByDepartment(department string) ([]*Team, error) {
+func GetTeamsByDepartment(department string) ([]*Team, error) {
 	msg := bson.M{"department": department, "deleteAt": new(time.Time)}
 	cursor, err1 := findMany(TableTeam, msg, 0)
 	if err1 != nil {
@@ -58,7 +58,7 @@ func GetTeamesByDepartment(department string) ([]*Team, error) {
 	return items, nil
 }
 
-func GetTeamesByCreator(creator string) ([]*Team, error) {
+func GetTeameByCreator(creator string) ([]*Team, error) {
 	msg := bson.M{"creator": creator, "deleteAt": new(time.Time)}
 	cursor, err1 := findMany(TableTeam, msg, 0)
 	if err1 != nil {
@@ -76,9 +76,26 @@ func GetTeamesByCreator(creator string) ([]*Team, error) {
 	return items, nil
 }
 
-func GetTeamesByMaster(master string) ([]*Team, error) {
+func GetTeamsByMaster(master string) ([]*Team, error) {
 	msg := bson.M{"master": master, "deleteAt": new(time.Time)}
 	cursor, err1 := findMany(TableTeam, msg, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*Team, 0, 20)
+	for cursor.Next(context.Background()) {
+		var node = new(Team)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
+func GetAllTeams() ([]*Team, error) {
+	cursor, err1 := findAll(TableTeam, 0)
 	if err1 != nil {
 		return nil, err1
 	}
