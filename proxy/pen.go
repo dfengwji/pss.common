@@ -18,8 +18,9 @@ type Pen struct {
 	UploadTime  time.Time          `json:"uploadAt" bson:"uploadAt"`
 	UseTime     time.Time          `json:"useAt" bson:"useAt"`
 	Mac         string             `json:"mac" bson:"mac"`
-	User        string             `json:"user" bson:"user"`
-	Child       string             `json:"child" bson:"child"`
+
+	User    string `json:"user" bson:"user"`
+	Appoint string `json:"child" bson:"child"`
 }
 
 func CreatePen(info *Pen) error {
@@ -100,12 +101,9 @@ func GetPensByUser(user string) ([]*Pen, error) {
 	return items, nil
 }
 
-func RemovePen(uid string) bool {
+func RemovePen(uid string) error {
 	_, err := removeOne(TablePen, uid)
-	if err == nil {
-		return true
-	}
-	return false
+	return err
 }
 
 func UpdatePenUser(uid string, user string, child string) error {

@@ -16,7 +16,7 @@ type Apply struct {
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
 	Applicant  string    `json:"applicant" bson:"applicant"`
-	Appoint    string    `json:"appoint" bson:"appoint"`
+	Inviter    string    `json:"inviter" bson:"inviter"`
 	Status     uint8     `json:"status" bson:"status"`
 	Scene      string    `json:"scene" bson:"scene"`
 	Group      string    `json:"group" bson:"group"`

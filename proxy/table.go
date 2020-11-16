@@ -108,7 +108,15 @@ const (
 	TablePages = "pages"
 
 	TableScene = "scenes"
+
+	/**
+	部门，分支机构
+	 */
 	TableDepartment = "departments"
+	/**
+	会议
+	 */
+	TableMeeting = "meetings"
 	TableClasses = "classes"
     TableTeam	= "teams"
 	TableStudent = "students"

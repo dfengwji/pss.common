@@ -16,14 +16,17 @@ type Department struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
-	Creator  string   `json:"creator" bson:"creator"`
-	Operator string   `json:"operator" bson:"operator"`
-	Master   string   `json:"master" bson:"master"`
-	Scene    string   `json:"scene" bson:"scene"`
-	Remark   string   `json:"remark" bson:"remark"`
-	Address  AddressInfo   `json:"address" bson:"address"`
-	Location string   `json:"location" bson:"location"`
-	Members  []string `json:"members" bson:"members"`
+	Creator  string `json:"creator" bson:"creator"`
+	Operator string `json:"operator" bson:"operator"`
+	Scene    string `json:"scene" bson:"scene"`
+	Remark   string `json:"remark" bson:"remark"`
+	Contact  string `json:"contact" bson:"contact"`
+
+	Master    string      `json:"master" bson:"master"`
+	Assistant string      `json:"assistant" bson:"assistant"`
+	Address   AddressInfo `json:"address" bson:"address"`
+	Location  string      `json:"location" bson:"location"`
+	Members   []string    `json:"members" bson:"members"`
 }
 
 func CreateDepartment(info *Department) error {
@@ -110,19 +113,43 @@ func GetDepartmentsByScene(scene string) ([]*Department, error) {
 	return items, nil
 }
 
-func UpdateDepartmentBase(uid, name, remark, location string) error {
-	msg := bson.M{"name": name, "remark": remark, "location": location, "updatedAt": time.Now()}
+func UpdateDepartmentBase(uid, name, remark, phone string) error {
+	msg := bson.M{"name": name, "remark": remark, "contact": phone, "updatedAt": time.Now()}
 	_, err := updateOne(TableDepartment, uid, msg)
 	return err
 }
 
-func UpdateDepartmentAddress(uid string, address AddressInfo) error {
-	msg := bson.M{"address": address, "updatedAt": time.Now()}
+func UpdateDepartmentMembers(uid string, members []string) error {
+	msg := bson.M{"members": members, "updatedAt": time.Now()}
 	_, err := updateOne(TableDepartment, uid, msg)
 	return err
 }
 
-func AppendDepartMember(uid string, member string) error {
+func UpdateDepartmentAddress(uid, location string, address AddressInfo) error {
+	msg := bson.M{"location": location, "address": address, "updatedAt": time.Now()}
+	_, err := updateOne(TableDepartment, uid, msg)
+	return err
+}
+
+func UpdateDepartmentContact(uid, phone string) error {
+	msg := bson.M{"contact": phone, "updatedAt": time.Now()}
+	_, err := updateOne(TableDepartment, uid, msg)
+	return err
+}
+
+func UpdateDepartmentMaster(uid, member string) error {
+	msg := bson.M{"master": member, "updatedAt": time.Now()}
+	_, err := updateOne(TableDepartment, uid, msg)
+	return err
+}
+
+func UpdateDepartmentAssistant(uid, member string) error {
+	msg := bson.M{"assistant": member, "updatedAt": time.Now()}
+	_, err := updateOne(TableDepartment, uid, msg)
+	return err
+}
+
+func AppendDepartMember(uid, member string) error {
 	if len(member) < 1 {
 		return errors.New("the member uid is empty")
 	}

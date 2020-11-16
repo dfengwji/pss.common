@@ -14,6 +14,8 @@ type NotebookStyle struct {
 	CreatedTime time.Time          `json:"createdAt" bson:"createdAt"`
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
+	Creator     string             `json:"creator" bson:"creator"`
+	Operator    string             `json:"operator" bson:"operator"`
 
 	Type        uint8              `json:"type" bson:"type"`
 	Page        uint16             `json:"page" bson:"page"`
@@ -70,8 +72,9 @@ func GetNotebookStylesByOrigin(book string) ([]*NotebookStyle, error) {
 	return items, nil
 }
 
-func UpdateNotebookStyleBase(uid, name, origin, cover, bg string) error {
-	msg := bson.M{"name": name, "origin": origin, "cover": cover, "background": bg, "updatedAt": time.Now()}
+func UpdateNotebookStyleBase(uid, name, origin, cover, bg, user string, page uint16) error {
+	msg := bson.M{"name": name, "origin": origin, "cover": cover, "operator": user,
+		"background": bg, "page": page, "updatedAt": time.Now()}
 	_, err := updateOne(TableNotebookStyle, uid, msg)
 	return err
 }
@@ -87,4 +90,9 @@ func GetNotebookStyle(uid string) (*NotebookStyle, error) {
 		return nil, err1
 	}
 	return model, nil
+}
+
+func RemoveNotebookStyle(uid string) error {
+	_, err := removeOne(TableNotebookStyle, uid)
+	return err
 }
