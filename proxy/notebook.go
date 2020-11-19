@@ -17,6 +17,8 @@ type NoteBook struct {
 
 	Type uint8 			`json:"type" bson:"type"`
 	Used uint8 			`json:"used" bson:"used"`
+	No   uint32 `json:"no" bson:"no"`
+	SN   string 		`json:"sn" bson:"sn"`
 	Owner string 		`json:"owner" bson:"owner"`
 	Style  string 		`json:"style" bson:"style"`
 	Remark string 		`json:"remark" bson:"remark"`

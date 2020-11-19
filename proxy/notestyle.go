@@ -19,6 +19,7 @@ type NotebookStyle struct {
 
 	Type        uint8              `json:"type" bson:"type"`
 	Page        uint16             `json:"page" bson:"page"`
+	Count		uint32 `json:"count" bson:"count"`
 	Cover       string             `json:"cover" bson:"cover"`
 	Background  string             `json:"background" bson:"background"`
 	OriginBook  string             `json:"origin" bson:"origin"`
@@ -75,6 +76,12 @@ func GetNotebookStylesByOrigin(book string) ([]*NotebookStyle, error) {
 func UpdateNotebookStyleBase(uid, name, origin, cover, bg, user string, page uint16) error {
 	msg := bson.M{"name": name, "origin": origin, "cover": cover, "operator": user,
 		"background": bg, "page": page, "updatedAt": time.Now()}
+	_, err := updateOne(TableNotebookStyle, uid, msg)
+	return err
+}
+
+func UpdateNotebookStyleCount(uid string, count uint32) error {
+	msg := bson.M{"count": count, "updatedAt": time.Now()}
 	_, err := updateOne(TableNotebookStyle, uid, msg)
 	return err
 }

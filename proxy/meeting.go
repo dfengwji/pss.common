@@ -76,8 +76,8 @@ func GetMeetingsByGroup(group string) ([]*Meeting, error) {
 	return items, nil
 }
 
-func UpdateMeetingBase(uid, name string) error {
-	msg := bson.M{"name": name, "updatedAt": time.Now()}
+func UpdateMeetingBase(uid, name, remark string) error {
+	msg := bson.M{"name": name, "remark":remark, "updatedAt": time.Now()}
 	_, err := updateOne(TableMeeting, uid, msg)
 	return err
 }
