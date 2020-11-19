@@ -55,6 +55,20 @@ func GetNoteBook(uid string) (*NoteBook, error) {
 	return model, nil
 }
 
+func GetNoteBookBySN(sn string) (*NoteBook, error) {
+	msg := bson.M{"sn": sn}
+	result, err := findOneBy(TableNoteBook, msg)
+	if err != nil {
+		return nil, err
+	}
+	model := new(NoteBook)
+	err1 := result.Decode(model)
+	if err1 != nil {
+		return nil, err1
+	}
+	return model, nil
+}
+
 func GetNoteBookByID(id uint64) (*NoteBook, error) {
 	msg := bson.M{"id": id}
 	result, err := findOneBy(TableNoteBook, msg)
