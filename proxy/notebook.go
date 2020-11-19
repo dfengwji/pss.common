@@ -69,6 +69,19 @@ func GetNoteBookBySN(sn string) (*NoteBook, error) {
 	return model, nil
 }
 
+func GetNoteBooksByStyle(style string) (uint32, error) {
+	msg := bson.M{"style": style, "deleteAt": new(time.Time)}
+	cursor, err1 := findMany(TableNoteBook, msg, 0)
+	if err1 != nil {
+		return 0, err1
+	}
+	var count uint32  = 0
+	for cursor.Next(context.Background()) {
+		count += 1
+	}
+	return count, nil
+}
+
 func GetNoteBookByID(id uint64) (*NoteBook, error) {
 	msg := bson.M{"id": id}
 	result, err := findOneBy(TableNoteBook, msg)
