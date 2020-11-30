@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -15,20 +16,20 @@ type Meeting struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
-	Creator  string   `json:"creator" bson:"creator"`
-	Operator string   `json:"operator" bson:"operator"`
+	Creator  string `json:"creator" bson:"creator"`
+	Operator string `json:"operator" bson:"operator"`
 
-	Status  uint8 `json:"status" bson:"status"`
+	Status uint8 `json:"status" bson:"status"`
 	/**
 	所属组织或者部门
-	 */
-	Group    string   `json:"group" bson:"group"`
-	Remark   string   `json:"remark" bson:"remark"`
-	Date     string `json:"date" bson:"date"`
-	Minute   uint16 `json:"minute" bson:"minute"`
-	Members  []string `json:"members" bson:"members"`
+	*/
+	Group   string   `json:"group" bson:"group"`
+	Remark  string   `json:"remark" bson:"remark"`
+	Date    string   `json:"date" bson:"date"`
+	Minute  uint16   `json:"minute" bson:"minute"`
+	Signs   []string `json:"signs" bson:"signs"`
+	Submits []string `json:"submits" bson:"submits"`
 }
-
 
 func CreateMeeting(info *Meeting) error {
 	_, err := insertOne(TableMeeting, info)
@@ -79,7 +80,7 @@ func GetMeetingsByGroup(group string) ([]*Meeting, error) {
 }
 
 func UpdateMeetingBase(uid, name, remark string) error {
-	msg := bson.M{"name": name, "remark":remark, "updatedAt": time.Now()}
+	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
 	_, err := updateOne(TableMeeting, uid, msg)
 	return err
 }
@@ -105,5 +106,23 @@ func GetMeeting(uid string) (*Meeting, error) {
 
 func RemoveMeeting(uid string) error {
 	_, err := removeOne(TableMeeting, uid)
+	return err
+}
+
+func AppendMeetingSign(uid, member, operator string) error {
+	if len(member) < 1 {
+		return errors.New("the member uid is empty")
+	}
+	msg := bson.M{"signs": member}
+	_, err := appendElement(TableMeeting, uid, msg)
+	return err
+}
+
+func AppendMeetingSubmit(uid, member, operator string) error {
+	if len(member) < 1 {
+		return errors.New("the member uid is empty")
+	}
+	msg := bson.M{"submits": member}
+	_, err := appendElement(TableMeeting, uid, msg)
 	return err
 }
