@@ -18,12 +18,14 @@ type Meeting struct {
 	Creator  string   `json:"creator" bson:"creator"`
 	Operator string   `json:"operator" bson:"operator"`
 
+	Status  uint8 `json:"status" bson:"status"`
 	/**
 	所属组织或者部门
 	 */
 	Group    string   `json:"group" bson:"group"`
 	Remark   string   `json:"remark" bson:"remark"`
 	Date     string `json:"date" bson:"date"`
+	Minute   uint16 `json:"minute" bson:"minute"`
 	Members  []string `json:"members" bson:"members"`
 }
 
@@ -78,6 +80,12 @@ func GetMeetingsByGroup(group string) ([]*Meeting, error) {
 
 func UpdateMeetingBase(uid, name, remark string) error {
 	msg := bson.M{"name": name, "remark":remark, "updatedAt": time.Now()}
+	_, err := updateOne(TableMeeting, uid, msg)
+	return err
+}
+
+func UpdateMeetingStatus(uid string, status uint16) error {
+	msg := bson.M{"status": status, "updatedAt": time.Now()}
 	_, err := updateOne(TableMeeting, uid, msg)
 	return err
 }
