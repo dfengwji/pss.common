@@ -135,6 +135,23 @@ func GetNoteBooksByOwner(owner string) ([]*NoteBook, error) {
 	return items, nil
 }
 
+func GetUsedNoteBookByOwner(owner string) ([]*NoteBook, error) {
+	cursor, err1 := findMany(TableNoteBook, bson.M{"owner": owner, "used":1}, 0)
+	if err1 != nil {
+		return nil, err1
+	}
+	var items = make([]*NoteBook, 0, 20)
+	for cursor.Next(context.Background()) {
+		var node = new(NoteBook)
+		if err := cursor.Decode(node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, node)
+		}
+	}
+	return items, nil
+}
+
 func UpdateNoteBookUsed(uid string, used uint8) error {
 	msg := bson.M{"used": used, "updatedAt": time.Now()}
 	_, err := updateOne(TableNoteBook, uid, msg)
