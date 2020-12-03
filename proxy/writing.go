@@ -52,6 +52,9 @@ func GetWriting(uid string) (*Writing, error) {
 	return model, err
 }
 
+/**
+查询不包含dots字段的数据
+ */
 func GetWritingsByWriter(writer uint64, book string) ([]*Writing, error) {
 	filter := bson.M{"writer": writer, "book": book, "deleteAt": new(time.Time)}
 	cursor, err := findManyByOpts(TableWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
