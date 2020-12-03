@@ -16,6 +16,7 @@ type Meeting struct {
 	UpdatedTime time.Time          `json:"updatedAt" bson:"updatedAt"`
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
+	StopTime time.Time `json:"stopAt" bson:"stopAt"`
 	Creator  string `json:"creator" bson:"creator"`
 	Operator string `json:"operator" bson:"operator"`
 
@@ -87,6 +88,12 @@ func UpdateMeetingBase(uid, name, remark string) error {
 
 func UpdateMeetingStatus(uid string, status uint16) error {
 	msg := bson.M{"status": status, "updatedAt": time.Now()}
+	_, err := updateOne(TableMeeting, uid, msg)
+	return err
+}
+
+func StopMeeting(uid string) error {
+	msg := bson.M{"status": 2, "stopAt": time.Now()}
 	_, err := updateOne(TableMeeting, uid, msg)
 	return err
 }
