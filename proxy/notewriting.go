@@ -68,6 +68,24 @@ func GetNoteWritingByPage(writer uint64, book string, page uint16) (*NoteWriting
 	return model, nil
 }
 
+func GetNoteWritingsByTime(writer uint64, book string, from, to time.Time) ([]*NoteWriting, error) {
+	filter := bson.M{"writer": writer, "book": book, "deleteAt": new(time.Time), "createdAt": bson.M{"$gte": from , "$lte": to}}
+	cursor, err := findMany(TableNoteWriting, filter, 20)
+	if err != nil {
+		return nil, err
+	}
+	var items = make([]*NoteWriting, 0, 20)
+	for cursor.Next(context.Background()) {
+		var node NoteWriting
+		if err := cursor.Decode(&node); err != nil {
+			return nil, err
+		} else {
+			items = append(items, &node)
+		}
+	}
+	return items, nil
+}
+
 func GetNoteWritingsByWriter(writer uint64, book string) ([]*NoteWriting, error) {
 	filter := bson.M{"writer": writer, "book": book, "deleteAt": new(time.Time)}
 	cursor, err := findMany(TableNoteWriting, filter, 20)
