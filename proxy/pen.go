@@ -19,8 +19,8 @@ type Pen struct {
 	UseTime     time.Time          `json:"useAt" bson:"useAt"`
 	Mac         string             `json:"mac" bson:"mac"`
 
-	User    string `json:"user" bson:"user"`
-	Appoint string `json:"child" bson:"child"`
+	Owner    string `json:"owner" bson:"owner"`
+	Appoint string `json:"appoint" bson:"appoint"`
 }
 
 func CreatePen(info *Pen) error {
@@ -83,8 +83,8 @@ func GetAllPens() ([]*Pen, error) {
 	return items, nil
 }
 
-func GetPensByUser(user string) ([]*Pen, error) {
-	msg := bson.M{"user": user, "deleteAt": new(time.Time)}
+func GetPensByOwner(owner string) ([]*Pen, error) {
+	msg := bson.M{"owner": owner, "deleteAt": new(time.Time)}
 	cursor, err1 := findMany(TablePen, msg, 0)
 	if err1 != nil {
 		return nil, err1
@@ -106,13 +106,19 @@ func RemovePen(uid string) error {
 	return err
 }
 
-func UpdatePenUser(uid string, user string, child string) error {
-	msg := bson.M{"user": user, "child": child, "updatedAt": time.Now()}
+func UpdatePenUser(uid, owner, appoint string) error {
+	msg := bson.M{"owner": owner, "appoint": appoint, "updatedAt": time.Now()}
 	_, err := updateOne(TablePen, uid, msg)
 	return err
 }
 
-func UpdatePenName(uid string, name string) error {
+func UpdatePenAppoint(uid, appoint string) error {
+	msg := bson.M{"appoint": appoint, "updatedAt": time.Now()}
+	_, err := updateOne(TablePen, uid, msg)
+	return err
+}
+
+func UpdatePenName(uid, name string) error {
 	msg := bson.M{"name": name, "updatedAt": time.Now()}
 	_, err := updateOne(TablePen, uid, msg)
 	return err
