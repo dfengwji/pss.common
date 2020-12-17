@@ -69,7 +69,7 @@ func GetNoteWritingByPage(writer uint64, book string, page uint16) (*NoteWriting
 }
 
 func GetNoteWritingsByTime(writer uint64, book string, from, to time.Time) ([]*NoteWriting, error) {
-	filter := bson.M{"writer": writer, "book": book, "deleteAt": new(time.Time), "createdAt": bson.M{"$gte": from , "$lte": to}}
+	filter := bson.M{"writer": writer, "book": book, "createdAt": bson.M{"$gte": from , "$lte": to}}
 	cursor, err := findMany(TableNoteWriting, filter, 0)
 	if err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ func GetNoteWritingsByTime(writer uint64, book string, from, to time.Time) ([]*N
 }
 
 func GetNoteWritingsInDuration(writer uint64, from, to time.Time) ([]*NoteWriting, error) {
-	filter := bson.M{"writer": writer, "deleteAt": new(time.Time), "createdAt": bson.M{"$gte": from , "$lte": to}}
+	filter := bson.M{"writer": writer, "createdAt": bson.M{"$gte": from , "$lte": to}}
 	cursor, err := findMany(TableNoteWriting, filter, 0)
 	if err != nil {
 		return nil, err
