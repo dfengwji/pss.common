@@ -17,6 +17,7 @@ type Meeting struct {
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
 	StopTime time.Time `json:"stopAt" bson:"stopAt"`
+	StartTime time.Time   `json:"startAt" bson:"startAt"`
 	Creator  string    `json:"creator" bson:"creator"`
 	Operator string    `json:"operator" bson:"operator"`
 
@@ -27,10 +28,15 @@ type Meeting struct {
 	*/
 	Group     string   `json:"group" bson:"group"`
 	Remark    string   `json:"remark" bson:"remark"`
-	StartTime string   `json:"time" bson:"time"`
+
+	/**
+	预约时间
+	 */
+	Appointed string `json:"appointed" bson:"appointed"`
 	Location  string   `json:"location" bson:"location"`
 	Signs     []string `json:"signs" bson:"signs"`
 	Submits   []string `json:"submits" bson:"submits"`
+	Notifies  []string `json:"notifies" bson:"notifies"`
 }
 
 func CreateMeeting(info *Meeting) error {
@@ -128,6 +134,15 @@ func AppendMeetingSign(uid, member, operator string) error {
 		return errors.New("the member uid is empty")
 	}
 	msg := bson.M{"signs": member}
+	_, err := appendElement(TableMeeting, uid, msg)
+	return err
+}
+
+func AppendMeetingNotify(uid, member, operator string) error {
+	if len(member) < 1 {
+		return errors.New("the member uid is empty")
+	}
+	msg := bson.M{"notifies": member}
 	_, err := appendElement(TableMeeting, uid, msg)
 	return err
 }
