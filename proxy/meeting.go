@@ -17,19 +17,20 @@ type Meeting struct {
 	DeleteTime  time.Time          `json:"deleteAt" bson:"deleteAt"`
 
 	StopTime time.Time `json:"stopAt" bson:"stopAt"`
-	Creator  string `json:"creator" bson:"creator"`
-	Operator string `json:"operator" bson:"operator"`
+	Creator  string    `json:"creator" bson:"creator"`
+	Operator string    `json:"operator" bson:"operator"`
 
 	Status uint8 `json:"status" bson:"status"`
+	Type      uint8    `json:"type" bson:"type"`
 	/**
 	所属组织或者部门
 	*/
-	Group   string   `json:"group" bson:"group"`
-	Remark  string   `json:"remark" bson:"remark"`
-	Date    string   `json:"date" bson:"date"`
-	Minute  uint16   `json:"minute" bson:"minute"`
-	Signs   []string `json:"signs" bson:"signs"`
-	Submits []string `json:"submits" bson:"submits"`
+	Group     string   `json:"group" bson:"group"`
+	Remark    string   `json:"remark" bson:"remark"`
+	StartTime string   `json:"time" bson:"time"`
+	Location  string   `json:"location" bson:"location"`
+	Signs     []string `json:"signs" bson:"signs"`
+	Submits   []string `json:"submits" bson:"submits"`
 }
 
 func CreateMeeting(info *Meeting) error {
@@ -80,8 +81,14 @@ func GetMeetingsByGroup(group string) ([]*Meeting, error) {
 	return items, nil
 }
 
-func UpdateMeetingBase(uid, name, remark string) error {
-	msg := bson.M{"name": name, "remark": remark, "updatedAt": time.Now()}
+func UpdateMeetingBase(uid, name, remark, operator string) error {
+	msg := bson.M{"name": name, "remark": remark, "operator": operator, "updatedAt": time.Now()}
+	_, err := updateOne(TableMeeting, uid, msg)
+	return err
+}
+
+func UpdateMeetingLocation(uid, location, operator string, kind uint8) error {
+	msg := bson.M{"type": kind, "location": location, "operator": operator, "updatedAt": time.Now()}
 	_, err := updateOne(TableMeeting, uid, msg)
 	return err
 }
@@ -93,7 +100,7 @@ func UpdateMeetingStatus(uid string, status uint16) error {
 }
 
 func StopMeeting(uid string) error {
-	msg := bson.M{"status": 2, "stopAt": time.Now()}
+	msg := bson.M{"status": 3, "stopAt": time.Now()}
 	_, err := updateOne(TableMeeting, uid, msg)
 	return err
 }
