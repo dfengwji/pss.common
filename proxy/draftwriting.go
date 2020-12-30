@@ -50,7 +50,7 @@ func GetDraftWriting(uid string) (*DraftWriting, error) {
 
 func GetDraftWritingsByDraft(draft string) ([]*DraftWriting, error) {
 	filter := bson.M{"draft": draft, "deleteAt": new(time.Time)}
-	cursor, err := findManyByOpts(TableDraftWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
+	cursor, err := FindManyByOpts(TableDraftWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
 	if err != nil {
 		return nil, err
 	}

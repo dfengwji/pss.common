@@ -57,7 +57,7 @@ func GetWriting(uid string) (*Writing, error) {
  */
 func GetWritingsByWriter(writer uint64, book string) ([]*Writing, error) {
 	filter := bson.M{"writer": writer, "book": book, "deleteAt": new(time.Time)}
-	cursor, err := findManyByOpts(TableWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
+	cursor, err := FindManyByOpts(TableWriting, filter, options.Find().SetProjection(bson.M{"dots": 0}))
 	if err != nil {
 		return nil, err
 	}

@@ -225,7 +225,7 @@ func findOneOfField(collection string, uid string, selector bson.M) (*mongo.Sing
 	return result, nil
 }
 
-func findOneByOpt(collection string, filter bson.M, selector bson.M) (*mongo.SingleResult, error) {
+func FindOneByOpt(collection string, filter bson.M, selector bson.M) (*mongo.SingleResult, error) {
 	c := noSql.Collection(collection)
 	if c == nil {
 		return nil, errors.New("can not found the collection of" + collection)
@@ -259,7 +259,7 @@ func findMany(collection string, filter bson.M, limit int64) (*mongo.Cursor, err
 	return cursor, nil
 }
 
-func findManyByOpts(collection string, filter bson.M, opts *options.FindOptions) (*mongo.Cursor, error) {
+func FindManyByOpts(collection string, filter bson.M, opts *options.FindOptions) (*mongo.Cursor, error) {
 	c := noSql.Collection(collection)
 	if c == nil {
 		return nil, errors.New("can not found the collection of" + collection)
