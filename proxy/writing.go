@@ -26,7 +26,7 @@ type Writing struct {
 	DotBook     uint64             `json:"dotBook" bson:"dotBook"`
 	DotStamp    uint64             `json:"dotStamp" bson:"dotStamp"`
 	DotNum      uint32             `json:"dotNum" bson:"dotNum"`
-	Dots        string             `json:"dots" bson:"dots"`
+	Dots        []byte             `json:"dots" bson:"dots"`
 }
 
 func CreateWriting(info *Writing) error {
@@ -114,7 +114,7 @@ func GetWritingDots(uid string) (*Writing, error) {
 	return model, nil
 }
 
-func UpdateWritingDots(uid string, stamp uint64, num uint32, hex string, duration uint16) error {
+func UpdateWritingDots(uid string, stamp uint64, num uint32, hex []byte, duration uint16) error {
 	msg := bson.M{"dotStamp": stamp, "dotNum": num, "dots": hex, "duration": duration, "updatedAt": time.Now()}
 	_, err := updateOne(TableWriting, uid, msg)
 	return err
