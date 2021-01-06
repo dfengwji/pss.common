@@ -26,6 +26,7 @@ type NoteWriting struct {
 	Snapshot string `json:"snapshot" bson:"snapshot"`
 	Color    string `json:"color" bson:"color"`
 	Dots     string `json:"dots" bson:"dots"`
+	Bytes 	[]byte `json:"bytes" bson:"bytes"`
 }
 
 func CreateNoteWriting(info *NoteWriting) error {
@@ -152,6 +153,12 @@ func UpdateNoteWritingSnapshot(uid string, snapshot string) error {
 
 func UpdateNoteWritingDots(uid string, stamp uint64, num uint32, dots string, duration uint16) error {
 	msg := bson.M{"dotStamp": stamp, "dotNum": num, "dots": dots, "duration": duration, "updatedAt": time.Now()}
+	_, err := updateOne(TableNoteWriting, uid, msg)
+	return err
+}
+
+func UpdateNoteWritingBytes(uid string, stamp uint64, num uint32, dots []byte, duration uint16) error {
+	msg := bson.M{"dotStamp": stamp, "dotNum": num, "bytes": dots, "duration": duration, "updatedAt": time.Now()}
 	_, err := updateOne(TableNoteWriting, uid, msg)
 	return err
 }

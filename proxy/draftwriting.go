@@ -22,7 +22,7 @@ type DraftWriting struct {
 	Page        uint16             `json:"page" bson:"page"`
 	Number      uint32             `json:"number" bson:"number"`
 	Duration    uint16             `json:"duration" bson:"duration"`
-	Dots        string             `json:"dots" bson:"dots"`
+	Dots        []byte             `json:"dots" bson:"dots"`
 }
 
 func CreateDraftWriting(info *DraftWriting) error {
@@ -79,7 +79,7 @@ func GetDraftWritingDots(uid string) (*DraftWriting, error) {
 	return model, nil
 }
 
-func UpdateDraftWritingDots(uid string, stamp uint64, num uint32, hex string, duration uint16) error {
+func UpdateDraftWritingDots(uid string, stamp uint64, num uint32, hex []byte, duration uint16) error {
 	msg := bson.M{"dotStamp": stamp, "dotNum": num, "dots": hex, "duration": duration, "updatedAt": time.Now()}
 	_, err := updateOne(TableDraftWriting, uid, msg)
 	return err
